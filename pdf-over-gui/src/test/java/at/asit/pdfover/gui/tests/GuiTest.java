@@ -4,9 +4,9 @@ import org.junit.jupiter.api.Test;
 
 public class GuiTest extends AbstractGuiTest{
 	
-	@Test
-	public void testDragNDropPdfAndSign(){
-		dragNDropPdfAndSign();
-	}
+    @Test
+    public void testDragNDropPdfAndSign(){
+	    dragNDropPdfAndSign();
+    }
 
 }

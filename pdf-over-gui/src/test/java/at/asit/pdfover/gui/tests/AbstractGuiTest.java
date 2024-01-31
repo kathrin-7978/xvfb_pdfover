@@ -69,11 +69,11 @@ public abstract class AbstractGuiTest  {
         swtbs.activate();
 
         sm.jumpToState(new PositioningState(sm));
-        String fileName = ".\\src\\test\\java\\at\\asit\\pdfover\\gui\\tests\\TestFile.pdf";
+        String fileName = "./src/test/java/at/asit/pdfover/gui/tests/TestFile.pdf";
         File documentPath = new File(fileName);
         sm.status.document = documentPath;
 
-        bot.toggleButton().click();
+        bot.toggleButton("&Neue Seite anlegen").click();
         bot.toggleButton("&Neue Seite rückgängig").click();
         bot.button("&Signieren").click();
 

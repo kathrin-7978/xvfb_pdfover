@@ -12,6 +12,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
+import at.asit.pdfover.gui.Main;
 import at.asit.pdfover.gui.workflow.StateMachine;
 import at.asit.pdfover.gui.workflow.states.PositioningState;
 
@@ -19,24 +20,22 @@ public abstract class AbstractGuiTest  {
 
     private static Thread uiThread;
     private static Shell shell;
-    private static StateMachine sm = new StateMachine(new String[0]);
+    private static StateMachine sm;
     private final static CyclicBarrier swtBarrier = new CyclicBarrier(2);
     private SWTBot bot;
 	
     @BeforeAll
     public static synchronized void setupApp() {
         if (uiThread == null) {
-        uiThread = new Thread(new Runnable() {
-
+            uiThread = new Thread(new Runnable() {
                 @Override
 	            public void run() {
+                    sm = Main.setup(new String[]{});
                     shell = sm.getMainShell();
                     try {
-                        while (true) {
-                            // wait for the test setup
-                            swtBarrier.await();
-                            sm.start();
-                        }
+                        // wait for the test setup
+                        swtBarrier.await();
+                        sm.start();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

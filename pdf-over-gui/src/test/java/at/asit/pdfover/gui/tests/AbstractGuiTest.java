@@ -1,6 +1,5 @@
 package at.asit.pdfover.gui.tests;
 
-import java.io.File;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
@@ -15,7 +14,6 @@ import org.junit.jupiter.api.BeforeEach;
 import at.asit.pdfover.commons.Messages;
 import at.asit.pdfover.gui.Main;
 import at.asit.pdfover.gui.workflow.StateMachine;
-import at.asit.pdfover.gui.workflow.states.PositioningState;
 
 public abstract class AbstractGuiTest  {
 
@@ -31,7 +29,7 @@ public abstract class AbstractGuiTest  {
             uiThread = new Thread(new Runnable() {
                 @Override
 	            public void run() {
-                    sm = Main.setup(new String[]{});
+                    sm = Main.setup(new String[]{"./src/test/java/at/asit/pdfover/gui/tests/TestFile.pdf"});
                     shell = sm.getMainShell();
                     try {
                         // wait for the test setup
@@ -68,11 +66,6 @@ public abstract class AbstractGuiTest  {
     protected void dragNDropPdfAndSign() {
         SWTBotShell swtbs = bot.activeShell();
         swtbs.activate();
-
-        sm.jumpToState(new PositioningState(sm));
-        String fileName = "./src/test/java/at/asit/pdfover/gui/tests/TestFile.pdf";
-        File documentPath = new File(fileName);
-        sm.status.document = documentPath;
 
         bot.toggleButton(str("positioning.newPage")).click();
         bot.toggleButton(str("positioning.removeNewPage")).click();

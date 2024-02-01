@@ -12,6 +12,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
+import at.asit.pdfover.commons.Messages;
 import at.asit.pdfover.gui.Main;
 import at.asit.pdfover.gui.workflow.StateMachine;
 import at.asit.pdfover.gui.workflow.states.PositioningState;
@@ -63,6 +64,7 @@ public abstract class AbstractGuiTest  {
         });
     }
 
+    protected String str(String k) { return Messages.getString(k); }
     protected void dragNDropPdfAndSign() {
         SWTBotShell swtbs = bot.activeShell();
         swtbs.activate();
@@ -72,10 +74,9 @@ public abstract class AbstractGuiTest  {
         File documentPath = new File(fileName);
         sm.status.document = documentPath;
 
-        bot.toggleButton("&Neue Seite anlegen").click();
-        bot.toggleButton("&Neue Seite rückgängig").click();
-        bot.button("&Signieren").click();
-
+        bot.toggleButton(str("positioning.newPage")).click();
+        bot.toggleButton(str("positioning.removeNewPage")).click();
+        bot.button(str("positioning.sign")).click();
     }
 
 }

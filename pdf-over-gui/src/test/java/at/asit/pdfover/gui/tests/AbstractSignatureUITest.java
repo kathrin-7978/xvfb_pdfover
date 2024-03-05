@@ -145,8 +145,8 @@ public abstract class AbstractSignatureUITest {
 
     protected void setCredentials() throws InterruptedException, IOException, BrokenBarrierException {
         try {
-            bot.textWithLabel(str("mobileBKU.number")).setText("TestUser-1497718384");
-            bot.textWithLabel(str("mobileBKU.password")).setText("123456789");
+            bot.textWithLabel(str("mobileBKU.number")).setText("testuser");
+            bot.textWithLabel(str("mobileBKU.password")).setText("testuser-password");
             bot.button(str("common.Ok")).click();
             bot.sleep(20000);
         }

@@ -46,7 +46,10 @@ public class SignaturePositionTestProvider {
     /**
      * Directory for reference files.
      */
-    private String refFileDir = "src\\test\\resources";
+    private String refFileDir = "src/test/resources";
+
+    private static final String UNIX_SEPARATOR = "/";
+
     /**
      *Current set signature profile.
      */
@@ -74,7 +77,7 @@ public class SignaturePositionTestProvider {
      * which overwrites ignored areas such as the date.
      */
     private static Map<Profile,String> ignoredAreas;
-    static {	
+    static {
         ignoredAreas = new HashMap<Profile,String>();
         ignoredAreas.put(Profile.AMTSSIGNATURBLOCK, "215,679,142,9");
         ignoredAreas.put(Profile.SIGNATURBLOCK_SMALL, "287,690,90,6");
@@ -133,7 +136,7 @@ public class SignaturePositionTestProvider {
 
         assertNotNull(refImageFileName);
 
-        String refImageFilePath = refFileDir.concat("\\").concat(refImageFileName);
+        String refImageFilePath = refFileDir.concat(UNIX_SEPARATOR).concat(refImageFileName);
 
         if (isCaptureRefImage()) {
             captureReferenceImage(refImageFilePath, outputFile);
@@ -158,14 +161,23 @@ public class SignaturePositionTestProvider {
         String nameResultDir = refImageFileName.substring(0, refImageFileName.lastIndexOf('.'));
         nameResultDir = nameResultDir.substring(7);
 
-        String pathRefImageIgnored = refFileDir.concat("\\").concat(nameResultDir).concat("\\refImage_ignored.png");
-        Path path = Paths.get(pathRefImageIgnored); 
+        String pathRefImageIgnored = refFileDir
+                .concat(UNIX_SEPARATOR)
+                .concat(nameResultDir)
+                .concat(UNIX_SEPARATOR)
+                .concat("refImage_ignored.png");
+
+        Path path = Paths.get(pathRefImageIgnored);
         if (!Files.exists(path, LinkOption.NOFOLLOW_LINKS)){
             Files.createDirectories(path);
         }
         ImageIO.write(refImage, "png", new File(pathRefImageIgnored));
 
-        String pathSigPageImageIgnored = refFileDir.concat("\\").concat(nameResultDir).concat("\\sigPageImage_ignored.png");
+        String pathSigPageImageIgnored = refFileDir
+                .concat(UNIX_SEPARATOR)
+                .concat(nameResultDir)
+                .concat(UNIX_SEPARATOR)
+                .concat("sigPageImage_ignored.png");
         ImageIO.write(sigPageImage, "png", new File(pathSigPageImageIgnored));
 
         boolean same = true;
@@ -186,7 +198,11 @@ public class SignaturePositionTestProvider {
             }
         }
 
-        String diffImage =  refFileDir.concat("\\").concat(nameResultDir).concat("\\difference.png");
+        String diffImage =  refFileDir
+                .concat(UNIX_SEPARATOR)
+                .concat(nameResultDir)
+                .concat(UNIX_SEPARATOR)
+                .concat("difference.png");
         ImageIO.write(differenceImage, "png", new File(diffImage));
 
         differenceGraphics.dispose();

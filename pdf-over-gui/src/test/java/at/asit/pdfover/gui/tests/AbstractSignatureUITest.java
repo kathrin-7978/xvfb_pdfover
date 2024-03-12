@@ -30,6 +30,7 @@ import at.asit.pdfover.gui.Main;
 import at.asit.pdfover.gui.workflow.StateMachine;
 import at.asit.pdfover.gui.workflow.states.ConfigurationUIState;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 
 public abstract class AbstractSignatureUITest {
 
@@ -43,6 +44,7 @@ public abstract class AbstractSignatureUITest {
     private static String outputDir = inputFile.getAbsoluteFile().getParent();
     private String postFix = "_superSigned";
     private Profile currentProfile;
+    private static final String UNIX_SEPARATOR = "/";
 
     private static final Logger logger = LoggerFactory
             .getLogger(AbstractSignatureUITest.class);
@@ -55,7 +57,7 @@ public abstract class AbstractSignatureUITest {
         deleteTempDir();
         tmpDir = Files.createTempDirectory(Paths.get(inputFile.getAbsoluteFile().getParent()), "output_");
         tmpDir.toFile().deleteOnExit();
-        outputDir = tmpDir.toString();
+        outputDir = FilenameUtils.separatorsToSystem(tmpDir.toString());
     }
 
     private static void deleteTempDir() throws IOException {
@@ -230,8 +232,9 @@ public abstract class AbstractSignatureUITest {
                 .substring(0, inputFileName.lastIndexOf('.'))
                 .concat(postFix)
                 .concat(".pdf");
-        pathOutputFile = outputDir.concat("\\")
-                .concat(pathOutputFile);
+        pathOutputFile = FilenameUtils.separatorsToSystem(outputDir
+                .concat(UNIX_SEPARATOR)
+                .concat(pathOutputFile));
         assertNotNull(pathOutputFile);
         return pathOutputFile;
     }

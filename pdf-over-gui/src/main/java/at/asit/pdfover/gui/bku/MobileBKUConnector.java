@@ -164,9 +164,8 @@ public class MobileBKUConnector implements BkuSlConnector {
 	            } else {
 	                return ATrustParser.Parse(request.getUri(), contentType.getMimeType(), entityBody);
 	            }
-	        } catch (Exception e) {
-	            log.debug("Failed to connect:", e);
-	            e.printStackTrace();
+	        } catch (ClientProtocolException e) {
+	            log.warn("Failed to connect:", e);
 	            throw new UserDisplayedError(Messages.formatString("error.FailedToConnect", e.getLocalizedMessage()));
 	        }
         }

@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
+import org.eclipse.swtbot.swt.finder.waits.ICondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -147,10 +148,10 @@ public abstract class AbstractSignatureUITest {
 
     protected void setCredentials() throws InterruptedException, IOException, BrokenBarrierException {
         try {
-            bot.textWithLabel(str("mobileBKU.number")).setText("testuser");
-            bot.textWithLabel(str("mobileBKU.password")).setText("testuser-password");
+            bot.textWithLabel(str("mobileBKU.number")).setText("TestUser-1902503362");
+            bot.textWithLabel(str("mobileBKU.password")).setText("123456789");
             bot.button(str("common.Ok")).click();
-            bot.sleep(20000);
+
         }
         catch (WidgetNotFoundException wnf) {
             bot.button(str("common.Cancel")).click();
@@ -158,6 +159,9 @@ public abstract class AbstractSignatureUITest {
         }
 
         File output = new File(getPathOutputFile());
+        ICondition outputExists = new FileExistsCondition(output);
+        bot.waitUntil(outputExists, 6000);
+
         if(!output.exists()) {
             bot.button(str("common.Cancel")).click();
         }
@@ -176,9 +180,10 @@ public abstract class AbstractSignatureUITest {
     protected void setBaseConfig(Profile profile) throws InterruptedException, IOException {
         try {
             bot.button(str("common.Cancel")).click();
-            bot.sleep(2000);
+            ICondition widgetExists = new WidgetExitsCondition(str("bku_selection.mobile"));
+            bot.waitUntil(widgetExists, 6000);
+
             sm.jumpToState(new ConfigurationUIState(sm));
-            //bot.sleep(2000);
 
             switch(profile) {
             case AMTSSIGNATURBLOCK:
@@ -241,25 +246,25 @@ public abstract class AbstractSignatureUITest {
 
     protected void setAdvancedUIConfig() throws InterruptedException, IOException {
         try {
-            bot.sleep(2000);
             sm.jumpToState(new ConfigurationUIState(sm));
-            //bot.sleep(2000);
+
             bot.tabItem(str("config.Advanced")).activate();
             if (!bot.checkBox(str("advanced_config.AutoPosition")).isChecked()) {
                 bot.checkBox(str("advanced_config.AutoPosition")).click();
             }
-            //bot.sleep(2000);
+
             bot.textWithLabel(str("advanced_config.OutputFolder")).setFocus();
             bot.textWithLabel(str("advanced_config.OutputFolder")).setText(outputDir);
-            //bot.sleep(2000);
+
             bot.textWithLabel(str("AdvancedConfigurationComposite.lblSaveFilePostFix.text")).setFocus();
             bot.textWithLabel(str("AdvancedConfigurationComposite.lblSaveFilePostFix.text")).setText(postFix);
-            //bot.sleep(2000);
+
             bot.button(str("common.Save")).setFocus();
             bot.button(str("common.Save")).click();
         }
         catch (WidgetNotFoundException wnf) {
             bot.button(str("common.Cancel")).setFocus();
+            
             bot.button(str("common.Cancel")).click();
             fail(wnf.getMessage());
         }
@@ -267,20 +272,19 @@ public abstract class AbstractSignatureUITest {
 
     protected void resetAdvancedUIConfig() {
         try {
-            bot.sleep(2000);
             sm.jumpToState(new ConfigurationUIState(sm));
-            bot.sleep(2000);
+
             bot.tabItem(str("config.Advanced")).activate();
             if (bot.checkBox(str("advanced_config.AutoPosition")).isChecked()) {
                 bot.checkBox(str("advanced_config.AutoPosition")).click();
             }
-//            bot.sleep(2000);
+
             bot.textWithLabel(str("advanced_config.OutputFolder")).setFocus();
             bot.textWithLabel(str("advanced_config.OutputFolder")).setText("");
-//            bot.sleep(2000);
+
             bot.textWithLabel(str("AdvancedConfigurationComposite.lblSaveFilePostFix.text")).setFocus();
             bot.textWithLabel(str("AdvancedConfigurationComposite.lblSaveFilePostFix.text")).setText(Constants.DEFAULT_POSTFIX);
-//            bot.sleep(2000);
+
             bot.button(str("common.Save")).setFocus();
             bot.button(str("common.Save")).click();
         }

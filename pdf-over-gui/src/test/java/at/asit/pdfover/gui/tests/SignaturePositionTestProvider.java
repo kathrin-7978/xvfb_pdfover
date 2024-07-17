@@ -138,7 +138,7 @@ public class SignaturePositionTestProvider {
 
         String refImageFilePath = refFileDir.concat(UNIX_SEPARATOR).concat(refImageFileName);
 
-        if (isCaptureRefImage()) {
+        if (isCaptureRefImage() && !refImageFileName.equals(REF_FILE_TEST_NEGATIVE)) {
             captureReferenceImage(refImageFilePath, outputFile);
             return;
         }

@@ -303,18 +303,16 @@ public class SignaturePositionTestProvider {
      * 
      * @author mtappler
      */
-    private BufferedImage captureImage(String fileName, int pageNumber) throws InterruptedException {             
-      try {        
-        PDDocument signedPdf = PDDocument.load(new File(fileName));
-        PDFRenderer renderer = new PDFRenderer(signedPdf);        
-        return renderer.renderImage(pageNumber - 1, ZOOM);
-              
-      } catch (IOException e) {
-        fail(String
+    private BufferedImage captureImage(String fileName, int pageNumber) {
+        try (PDDocument signedPdf = PDDocument.load(new File(fileName))) {
+            PDFRenderer renderer = new PDFRenderer(signedPdf);
+            return renderer.renderImage(pageNumber - 1, ZOOM);
+        } catch (IOException e) {
+            fail(String
             .format("Not possible to capture page %d of file %s, because of %s.",
                     pageNumber, fileName, e.getMessage()));
-        return null;
-      }     
+            return null;
+        }
     }
 
 }

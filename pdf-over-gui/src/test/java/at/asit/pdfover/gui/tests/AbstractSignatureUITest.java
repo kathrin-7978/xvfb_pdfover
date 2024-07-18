@@ -81,7 +81,7 @@ public abstract class AbstractSignatureUITest {
      */
 
     @BeforeEach
-    public final void setup() throws BrokenBarrierException, InterruptedException, IOException {
+    public final void setup() throws BrokenBarrierException, InterruptedException {
         String[] args = null;
         boolean setup = true;
         while (setup) {
@@ -96,7 +96,7 @@ public abstract class AbstractSignatureUITest {
         setupSWTBot(args);
         }
 
-    public final void setupSWTBot(String[] cmdLineArgs) throws InterruptedException, BrokenBarrierException, IOException {
+    public final void setupSWTBot(String[] cmdLineArgs) throws InterruptedException, BrokenBarrierException {
         final CyclicBarrier swtBarrier = new CyclicBarrier(2);
 
         if (uiThread == null) {
@@ -127,14 +127,14 @@ public abstract class AbstractSignatureUITest {
     }
 
     @AfterEach
-    public void reset() throws InterruptedException, IOException {
+    public void reset() throws InterruptedException {
         logger.info("reset config");
         resetAdvancedUIConfig();
         deleteOutputFile();
         closeShell();
     }
 
-    public void closeShell() throws InterruptedException, IOException {
+    public void closeShell() throws InterruptedException {
         Display.getDefault().syncExec(new Runnable() {
             public void run() {
                 shell.close();
@@ -146,7 +146,7 @@ public abstract class AbstractSignatureUITest {
 
     protected String str(String k) { return Messages.getString(k); }
 
-    protected void setCredentials() throws InterruptedException, IOException, BrokenBarrierException {
+    protected void setCredentials() {
         try {
             bot.textWithLabel(str("mobileBKU.number")).setText("TestUser-1902503362");
             bot.textWithLabel(str("mobileBKU.password")).setText("123456789");
@@ -177,7 +177,7 @@ public abstract class AbstractSignatureUITest {
         }
     }
 
-    protected void setBaseConfig(Profile profile) throws InterruptedException, IOException {
+    protected void setBaseConfig(Profile profile) {
         try {
             bot.button(str("common.Cancel")).click();
             ICondition widgetExists = new WidgetExitsCondition(str("bku_selection.mobile"));
@@ -244,7 +244,7 @@ public abstract class AbstractSignatureUITest {
         return pathOutputFile;
     }
 
-    protected void setAdvancedUIConfig() throws InterruptedException, IOException {
+    protected void setAdvancedUIConfig() {
         try {
             sm.jumpToState(new ConfigurationUIState(sm));
 

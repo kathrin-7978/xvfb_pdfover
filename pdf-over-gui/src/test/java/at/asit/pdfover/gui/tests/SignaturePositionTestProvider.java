@@ -126,7 +126,7 @@ public class SignaturePositionTestProvider {
      * @throws InterruptedException
      * @author mtappler, modified by kresek
      */
-    protected void checkSignaturePosition(Profile currentProfile, boolean negative, String outputFile) throws IOException, InterruptedException {
+    protected void checkSignaturePosition(Profile currentProfile, boolean negative, String outputFile) throws IOException {
         this.currentProfile = currentProfile;
         String refImageFileName = null;
         if (negative)
@@ -282,7 +282,7 @@ public class SignaturePositionTestProvider {
      * 
      * @author mtappler
      */
-    private void captureReferenceImage(String refImageFile, String outputFile) throws IOException, InterruptedException {
+    private void captureReferenceImage(String refImageFile, String outputFile) throws IOException {
         BufferedImage image = captureImage(outputFile, pageNo);
         ImageIO.write(image, "png", new File(refImageFile));
         Graphics refImageGraphics = image.createGraphics();

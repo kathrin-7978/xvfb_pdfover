@@ -38,7 +38,7 @@ public class SignaturePositionTestProvider {
      * @param true
      *         reference pic is created, compare test is skipped
      */
-    private boolean captureRefImage = false;
+    private boolean captureRefImage;
     /**
      * Zoom value which is used for signed and reference document.
      */
@@ -126,7 +126,8 @@ public class SignaturePositionTestProvider {
      * @throws InterruptedException
      * @author mtappler, modified by kresek
      */
-    protected void checkSignaturePosition(Profile currentProfile, boolean negative, String outputFile) throws IOException {
+    protected void checkSignaturePosition(Profile currentProfile, boolean negative, String outputFile, boolean captureRefImage) throws IOException {
+        this.captureRefImage = captureRefImage;
         this.currentProfile = currentProfile;
         String refImageFileName = null;
         if (negative)

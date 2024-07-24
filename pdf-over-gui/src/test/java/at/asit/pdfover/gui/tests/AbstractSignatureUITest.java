@@ -172,11 +172,11 @@ public abstract class AbstractSignatureUITest {
         }
     }
 
-    protected void testSignature(boolean negative) throws IOException {
+    protected void testSignature(boolean negative, boolean captureRefImage) throws IOException {
         String outputFile = getPathOutputFile();
         assertNotNull(currentProfile);
         assertNotNull(outputFile);
-        provider.checkSignaturePosition(currentProfile, negative, getPathOutputFile());
+        provider.checkSignaturePosition(currentProfile, negative, getPathOutputFile(), captureRefImage);
     }
 
     private String getPathOutputFile() {

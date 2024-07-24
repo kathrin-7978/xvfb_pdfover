@@ -5,13 +5,21 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swtbot.swt.finder.SWTBot;
@@ -29,7 +37,9 @@ import at.asit.pdfover.commons.Messages;
 import at.asit.pdfover.commons.Profile;
 import at.asit.pdfover.gui.Main;
 import at.asit.pdfover.gui.workflow.StateMachine;
-import at.asit.pdfover.gui.workflow.states.ConfigurationUIState;
+import at.asit.pdfover.gui.workflow.config.ConfigurationManager;
+import lombok.NonNull;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
@@ -53,12 +63,16 @@ public abstract class AbstractSignatureUITest {
     SignaturePositionTestProvider provider = new SignaturePositionTestProvider();
     private static Path tmpDir;
 
+
+    private static List<Profile> profiles = new ArrayList<>();
+
+    protected String str(String k) { return Messages.getString(k); }
+
     @BeforeAll
-    public static void createTempDir() throws IOException {
+    public static void prepareTestEnvironment() throws IOException {
         deleteTempDir();
-        tmpDir = Files.createTempDirectory(Paths.get(inputFile.getAbsoluteFile().getParent()), "output_");
-        tmpDir.toFile().deleteOnExit();
-        outputDir = FilenameUtils.separatorsToSystem(tmpDir.toString());
+        createTempDir();
+        setSignatureProfiles();
     }
 
     private static void deleteTempDir() throws IOException {
@@ -71,43 +85,28 @@ public abstract class AbstractSignatureUITest {
         }
     }
 
-    /**
-     * workaround for setup until
-     * file selection works automatically
-     *
-     * @throws BrokenBarrierException
-     * @throws InterruptedException
-     * @throws IOException
-     */
+    private static void createTempDir() throws IOException {
+        tmpDir = Files.createTempDirectory(Paths.get(inputFile.getAbsoluteFile().getParent()), "output_");
+        tmpDir.toFile().deleteOnExit();
+        outputDir = FilenameUtils.separatorsToSystem(tmpDir.toString());
+    }
+
 
     @BeforeEach
-    public final void setup() throws BrokenBarrierException, InterruptedException {
-        String[] args = null;
-        boolean setup = true;
-        while (setup) {
-            args = new String[]{};
-            logger.info("setup initial UI config");
-            setupSWTBot(args);
-            setAdvancedUIConfig();
-            closeShell();
-            setup = false;
-        }
-        args = new String[]{inputFile.getAbsolutePath()};
-        setupSWTBot(args);
-        }
-
-    public final void setupSWTBot(String[] cmdLineArgs) throws InterruptedException, BrokenBarrierException {
+    public final void setupUITest() throws InterruptedException, BrokenBarrierException {
         final CyclicBarrier swtBarrier = new CyclicBarrier(2);
 
         if (uiThread == null) {
             uiThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    sm = Main.setup(cmdLineArgs);
+                	currentProfile = getCurrentProfile();
+                	setConfig(currentProfile);					
+				
+                    sm = Main.setup(new String[]{inputFile.getAbsolutePath()});
                     shell = sm.getMainShell();
 
                     try {
-                        // wait for the test setup
                         swtBarrier.await();
                         sm.start();
                     } catch (Exception e) {
@@ -118,7 +117,6 @@ public abstract class AbstractSignatureUITest {
             uiThread.setDaemon(true);
             uiThread.start();
         }
-        // synchronize with the thread opening the shell
         swtBarrier.await();
 
         bot =  new SWTBot(shell);
@@ -128,8 +126,6 @@ public abstract class AbstractSignatureUITest {
 
     @AfterEach
     public void reset() throws InterruptedException {
-        logger.info("reset config");
-        resetAdvancedUIConfig();
         deleteOutputFile();
         closeShell();
     }
@@ -144,7 +140,6 @@ public abstract class AbstractSignatureUITest {
         uiThread = null;
     }
 
-    protected String str(String k) { return Messages.getString(k); }
 
     protected void setCredentials() {
         try {
@@ -177,54 +172,7 @@ public abstract class AbstractSignatureUITest {
         }
     }
 
-    protected void setBaseConfig(Profile profile) {
-        try {
-            bot.button(str("common.Cancel")).click();
-            ICondition widgetExists = new WidgetExitsCondition(str("bku_selection.mobile"));
-            bot.waitUntil(widgetExists, 6000);
-
-            sm.jumpToState(new ConfigurationUIState(sm));
-
-            switch(profile) {
-            case AMTSSIGNATURBLOCK:
-                bot.comboBoxInGroup(str("simple_config.SigProfile_Title"))
-                        .setSelection(str("simple_config.AMTSSIGNATURBLOCK"));
-                currentProfile = profile;
-                break;
-            case SIGNATURBLOCK_SMALL:
-                bot.comboBoxInGroup(str("simple_config.SigProfile_Title"))
-                        .setSelection(str("simple_config.SIGNATURBLOCK_SMALL"));
-                currentProfile = profile;
-                break;
-            case BASE_LOGO:
-                bot.comboBoxInGroup(str("simple_config.SigProfile_Title"))
-                        .setSelection(str("simple_config.BASE_LOGO"));
-                currentProfile = profile;
-                break;
-            case INVISIBLE:
-                bot.comboBoxInGroup(str("simple_config.SigProfile_Title"))
-                        .setSelection(str("simple_config.INVISIBLE"));
-                currentProfile = profile;
-                break;
-            default:
-                break;
-            }
-
-            bot.button(str("common.Save")).setFocus();
-            bot.button(str("common.Save")).click();
-            bot.button(str("bku_selection.mobile")).click();
-
-        } catch (WidgetNotFoundException wnf) {
-            bot.button(str("common.Cancel")).setFocus();
-            bot.button(str("common.Cancel")).click();
-            bot.button(str("bku_selection.mobile")).click();
-            bot.button(str("common.Cancel")).click();
-            fail(wnf.getMessage());
-        }
-        logger.info("Current signature profile: " + currentProfile);
-        }
-
-    protected void testSignature(boolean negative) throws IOException, InterruptedException {
+    protected void testSignature(boolean negative) throws IOException {
         String outputFile = getPathOutputFile();
         assertNotNull(currentProfile);
         assertNotNull(outputFile);
@@ -244,53 +192,52 @@ public abstract class AbstractSignatureUITest {
         return pathOutputFile;
     }
 
-    protected void setAdvancedUIConfig() {
+    private static void setProperty(@NonNull Properties props, @NonNull String key, @NonNull String value) { props.setProperty(key, value); }
+
+    private void setConfig(Profile currentProfile) {
+        ConfigurationManager cm = new ConfigurationManager();
+        Point size = cm.getMainWindowSize();
+
+        Map<String,String> testParams = Map.ofEntries(
+                Map.entry(Constants.CFG_BKU, cm.getDefaultBKUPersistent().name()),
+                Map.entry(Constants.CFG_KEYSTORE_PASSSTORETYPE, "memory"),
+                Map.entry(Constants.CFG_LOCALE, cm.getInterfaceLocale().toString()),
+                Map.entry(Constants.CFG_LOGO_ONLY_SIZE, Double.toString(cm.getLogoOnlyTargetSize())),
+                Map.entry(Constants.CFG_MAINWINDOW_SIZE, size.x + "," + size.y),
+                Map.entry(Constants.CFG_OUTPUT_FOLDER, outputDir),
+                Map.entry(Constants.CFG_POSTFIX, postFix),
+                Map.entry(Constants.CFG_SIGNATURE_NOTE, currentProfile.getDefaultSignatureBlockNote(Locale.GERMANY)),
+                Map.entry(Constants.CFG_SIGNATURE_POSITION, "auto"),
+                Map.entry(Constants.SIGNATURE_PROFILE, currentProfile.toString()),
+                Map.entry(Constants.CFG_SIGNATURE_LOCALE, cm.getSignatureLocale().toString())
+                );
+
+        File pdfOverConfig = new File(Constants.CONFIG_DIRECTORY + File.separator + Constants.DEFAULT_CONFIG_FILENAME);
+        Properties props = new Properties();
+        testParams.forEach((k, v) -> setProperty(props, k, v));
+
         try {
-            sm.jumpToState(new ConfigurationUIState(sm));
-
-            bot.tabItem(str("config.Advanced")).activate();
-            if (!bot.checkBox(str("advanced_config.AutoPosition")).isChecked()) {
-                bot.checkBox(str("advanced_config.AutoPosition")).click();
-            }
-
-            bot.textWithLabel(str("advanced_config.OutputFolder")).setFocus();
-            bot.textWithLabel(str("advanced_config.OutputFolder")).setText(outputDir);
-
-            bot.textWithLabel(str("AdvancedConfigurationComposite.lblSaveFilePostFix.text")).setFocus();
-            bot.textWithLabel(str("AdvancedConfigurationComposite.lblSaveFilePostFix.text")).setText(postFix);
-
-            bot.button(str("common.Save")).setFocus();
-            bot.button(str("common.Save")).click();
-        }
-        catch (WidgetNotFoundException wnf) {
-            bot.button(str("common.Cancel")).setFocus();
-            
-            bot.button(str("common.Cancel")).click();
-            fail(wnf.getMessage());
-        }
+            FileOutputStream outputstream = new FileOutputStream(pdfOverConfig, false);
+	        props.store(outputstream, "TEST Configuration file was generated!");
+        } catch (IOException e) {
+            logger.warn("Failed to create configuration file.");
+		}
     }
 
-    protected void resetAdvancedUIConfig() {
-        try {
-            sm.jumpToState(new ConfigurationUIState(sm));
-
-            bot.tabItem(str("config.Advanced")).activate();
-            if (bot.checkBox(str("advanced_config.AutoPosition")).isChecked()) {
-                bot.checkBox(str("advanced_config.AutoPosition")).click();
-            }
-
-            bot.textWithLabel(str("advanced_config.OutputFolder")).setFocus();
-            bot.textWithLabel(str("advanced_config.OutputFolder")).setText("");
-
-            bot.textWithLabel(str("AdvancedConfigurationComposite.lblSaveFilePostFix.text")).setFocus();
-            bot.textWithLabel(str("AdvancedConfigurationComposite.lblSaveFilePostFix.text")).setText(Constants.DEFAULT_POSTFIX);
-
-            bot.button(str("common.Save")).setFocus();
-            bot.button(str("common.Save")).click();
+    public static void setSignatureProfiles() {
+        for (Profile p : Profile.values()) {
+            profiles.add(p);
         }
-        catch (WidgetNotFoundException wnf) {
-            bot.button(str("common.Cancel")).setFocus();
-            bot.button(str("common.Cancel")).click();
-        }
+        assert(EnumSet.allOf(Profile.class).stream().allMatch(profiles::contains));
     }
+
+    public Profile getCurrentProfile() {
+        currentProfile = profiles.get(0);
+        profiles.remove(0);
+        if (profiles.isEmpty()) {
+           	setSignatureProfiles();
+           }
+        return currentProfile;
+    }
+
 }

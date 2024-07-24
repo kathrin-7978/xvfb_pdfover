@@ -14,7 +14,6 @@ public class SignatureUITest extends AbstractSignatureUITest{
     @ParameterizedTest
     @EnumSource(Profile.class)
     public void testSignaturAutoPosition(Profile profile) throws InterruptedException, IOException, BrokenBarrierException{
-        setBaseConfig(profile);
         setCredentials();
         testSignature(isNegative);
     }
@@ -23,7 +22,6 @@ public class SignatureUITest extends AbstractSignatureUITest{
     @EnumSource(Profile.class)
     public void testSignaturAutoPositionNegative(Profile profile) throws InterruptedException, IOException, BrokenBarrierException{
         isNegative = true;
-        setBaseConfig(profile);
         setCredentials();
         testSignature(isNegative);
     }

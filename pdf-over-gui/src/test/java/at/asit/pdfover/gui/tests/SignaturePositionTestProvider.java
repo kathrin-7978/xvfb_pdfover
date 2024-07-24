@@ -137,8 +137,10 @@ public class SignaturePositionTestProvider {
         assertNotNull(refImageFileName);
 
         String refImageFilePath = refFileDir.concat(UNIX_SEPARATOR).concat(refImageFileName);
-
-        if (isCaptureRefImage() && !refImageFileName.equals(REF_FILE_TEST_NEGATIVE)) {
+        
+        if (isCaptureRefImage() && refImageFileName.equals(REF_FILE_TEST_NEGATIVE)) {
+        	return;
+        } else if (isCaptureRefImage()) {	
             captureReferenceImage(refImageFilePath, outputFile);
             return;
         }
@@ -160,6 +162,10 @@ public class SignaturePositionTestProvider {
 
         String nameResultDir = refImageFileName.substring(0, refImageFileName.lastIndexOf('.'));
         nameResultDir = nameResultDir.substring(7);
+        
+        if(negative) {
+        	nameResultDir = nameResultDir.concat(currentProfile.toString());
+        }
 
         String pathRefImageIgnored = refFileDir
                 .concat(UNIX_SEPARATOR)

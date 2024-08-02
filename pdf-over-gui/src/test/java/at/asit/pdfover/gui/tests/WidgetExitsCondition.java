@@ -12,7 +12,7 @@ public class WidgetExitsCondition extends DefaultCondition {
 	
 	@Override
 	public boolean test() throws Exception {
-		return bot.button(widgetName).isVisible();
+		return bot.textWithLabel(widgetName).isVisible();
 	}
 
 	@Override

@@ -20,7 +20,7 @@ jobs:
           distribution: 'adopt'
           cache: maven
       - name: Build with Maven
-        run: mvn -B clean install test -Pwindows -Pci-build -Dno-native-profile
+        run: mvn -B test -Pwindows -Pci-build -Dno-native-profile -X -e
       - name: Describe current commit
         run: echo "commit_sha=$("${{ github.sha }}".SubString(0,7))" >> $env:GITHUB_ENV
       - name: Remove Previous Build Artifacts

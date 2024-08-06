@@ -106,6 +106,7 @@ public abstract class AbstractSignatureUITest {
 				
                     sm = Main.setup(new String[]{});
                     shell = sm.getMainShell();
+                    shell.forceActive();
 
                     try {
                         swtBarrier.await();

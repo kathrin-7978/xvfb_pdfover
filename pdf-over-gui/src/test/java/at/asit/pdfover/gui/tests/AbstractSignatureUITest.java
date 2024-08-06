@@ -103,7 +103,7 @@ public abstract class AbstractSignatureUITest {
                 	currentProfile = getCurrentProfile();
                 	setConfig(currentProfile);					
 				
-                    sm = Main.setup(new String[]{inputFile.getAbsolutePath()});
+                    sm = Main.setup(new String[]{});
                     shell = sm.getMainShell();
 
                     try {
@@ -241,5 +241,16 @@ public abstract class AbstractSignatureUITest {
            }
         return currentProfile;
     }
+
+	public void setBaseConfig() {
+		try {
+			bot.button(str("dataSourceSelection.browse")).click();
+			bot.sleep(3000);
+        }
+        catch (WidgetNotFoundException wnf) {
+            fail(wnf.getMessage());
+        }
+		
+	}
 
 }

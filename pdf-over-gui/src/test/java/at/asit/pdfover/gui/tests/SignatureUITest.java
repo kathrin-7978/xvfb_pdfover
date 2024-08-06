@@ -16,6 +16,7 @@ public class SignatureUITest extends AbstractSignatureUITest{
     @Test
     public void simpleUITest() throws IOException {
         dragNDropPdfAndSign();
+        setCredentials();
     }
 
 //	@Order(1)

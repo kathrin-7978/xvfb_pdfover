@@ -244,7 +244,7 @@ public abstract class AbstractSignatureUITest {
 
 	public void setBaseConfig() {
 		try {
-			bot.button(str("dataSourceSelection.browse")).click();
+			bot.button(str("dataSourceSelection.browse1")).click();
 			bot.sleep(3000);
         }
         catch (WidgetNotFoundException wnf) {

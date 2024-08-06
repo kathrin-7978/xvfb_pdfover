@@ -103,7 +103,7 @@ public abstract class AbstractSignatureUITest {
                 	currentProfile = getCurrentProfile();
                 	setConfig(currentProfile);					
 				
-                    sm = Main.setup(new String[]{});
+                    sm = Main.setup(new String[]{inputFile.getAbsolutePath()});
                     shell = sm.getMainShell();
 
                     try {

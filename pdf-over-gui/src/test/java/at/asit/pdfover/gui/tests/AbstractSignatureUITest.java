@@ -38,6 +38,7 @@ import at.asit.pdfover.commons.Profile;
 import at.asit.pdfover.gui.Main;
 import at.asit.pdfover.gui.workflow.StateMachine;
 import at.asit.pdfover.gui.workflow.config.ConfigurationManager;
+import at.asit.pdfover.gui.workflow.states.PositioningState;
 import lombok.NonNull;
 
 import org.apache.commons.io.FileUtils;
@@ -103,7 +104,7 @@ public abstract class AbstractSignatureUITest {
                 	currentProfile = getCurrentProfile();
                 	setConfig(currentProfile);					
 				
-                    sm = Main.setup(new String[]{inputFile.getAbsolutePath()});
+                    sm = Main.setup(new String[]{});
                     shell = sm.getMainShell();
 
                     try {
@@ -252,5 +253,18 @@ public abstract class AbstractSignatureUITest {
 //        }
 //		
 //	}
+
+    protected void dragNDropPdfAndSign() {
+        SWTBotShell swtbs = bot.activeShell();
+        swtbs.activate();
+
+        sm.jumpToState(new PositioningState(sm));
+        String fileName = inputFile.toString();
+        File documentPath = new File(fileName);
+        sm.status.document = documentPath;
+
+        bot.sleep(3000);
+
+    }
 
 }

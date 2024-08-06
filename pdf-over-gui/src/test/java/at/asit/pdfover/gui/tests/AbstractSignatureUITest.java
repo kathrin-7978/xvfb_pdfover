@@ -242,15 +242,15 @@ public abstract class AbstractSignatureUITest {
         return currentProfile;
     }
 
-	public void setBaseConfig() {
-		try {
-			bot.button(str("dataSourceSelection.browse1")).click();
-			bot.sleep(3000);
-        }
-        catch (WidgetNotFoundException wnf) {
-            fail(wnf.getMessage());
-        }
-		
-	}
+//	public void setBaseConfig() {
+//		try {
+//			bot.button(str("dataSourceSelection.browse")).click();
+//			bot.sleep(3000);
+//        }
+//        catch (WidgetNotFoundException wnf) {
+//            fail(wnf.getMessage());
+//        }
+//		
+//	}
 
 }

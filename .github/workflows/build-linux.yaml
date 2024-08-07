@@ -20,7 +20,7 @@ jobs:
           distribution: 'adopt'
           cache: maven
       - name: Install required packages
-        run: sudo apt-get update && sudo apt-get install -y x11-apps xauth xvfb libgtk-3-0 && rm -rf /var/lib/apt/lists/*
+        run: sudo apt-get update && sudo apt-get install -y x11-apps xauth xvfb libgtk-3-0 && sudo rm -rf /var/lib/apt/lists/*
       - name: Build with Maven
         run: xvfb-run mvn -B clean install -Plinux -Pci-build -Dno-native-profile
       - name: Describe current commit

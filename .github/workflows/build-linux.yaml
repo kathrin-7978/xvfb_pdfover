@@ -22,7 +22,7 @@ jobs:
       - name: Install required packages
         run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0
       - name: Build with Maven
-        run: mvn -B clean install test -Plinux -Pci-build -Dno-native-profile
+        run: xvfb-run mvn -B test -Plinux -Pci-build -Dno-native-profile
       - name: Describe current commit
         run: echo "commit_sha=${GITHUB_SHA::7}" >> $GITHUB_ENV
       - name: Remove Previous Build Artifacts

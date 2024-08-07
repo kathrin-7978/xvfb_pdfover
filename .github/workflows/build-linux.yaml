@@ -19,10 +19,14 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
           cache: maven
-      - name: Run headless test
-        uses: coactions/setup-xvfb@v1
-        with:
-          run: mvn -B clean install -Plinux -Pci-build -Dno-native-profile	  
+      - name: Set up virtual X11
+        run: sudo  apt-get install xvfb
+      - name: Start virtual frame buffer
+        run: Xvfb :1 -screen 0 1024x768x16 &
+      - name: set display
+        run: export DISPLAY=:1      
+      - name: Build with Maven
+        run: mvn -B clean install -Plinux -Pci-build -Dno-native-profile
       - name: Describe current commit
         run: echo "commit_sha=${GITHUB_SHA::7}" >> $GITHUB_ENV
       - name: Remove Previous Build Artifacts

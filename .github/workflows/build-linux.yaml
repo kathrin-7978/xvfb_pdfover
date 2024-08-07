@@ -19,6 +19,8 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
           cache: maven
+      - name: Install required packages
+        run: apt-get update && apt get install -y xvfb libgtk-3-0
       - name: Build with Maven
         run: mvn -B clean install test -Plinux -Pci-build -Dno-native-profile
       - name: Describe current commit

@@ -20,7 +20,7 @@ jobs:
           distribution: 'adopt'
           cache: maven
       - name: Set up virtual X11
-        run: sudo  apt-get install xvfb
+        run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0
       - name: Start virtual frame buffer
         run: Xvfb :1 -screen 0 1024x768x16 &
       - name: set display

@@ -26,7 +26,7 @@ jobs:
       - name: set display
         run: export DISPLAY=:1      
       - name: Build with Maven
-        run: mvn -B clean install -Plinux -Pci-build -Dno-native-profile
+        run: xvfb-run mvn -B clean install -Plinux -Pci-build -Dno-native-profile
       - name: Describe current commit
         run: echo "commit_sha=${GITHUB_SHA::7}" >> $GITHUB_ENV
       - name: Remove Previous Build Artifacts

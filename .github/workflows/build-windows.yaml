@@ -1,5 +1,4 @@
-name: Run Headless Tests on Windows Server
-
+name: Build Windows
 on:
   push:
     branches: [ "feature/testing" ]
@@ -37,15 +36,6 @@ jobs:
         with:
           name: pdf-over-${{ github.event.pull_request.number || github.ref_name }}-${{ env.commit_sha }}-windows-x86_64
           path: pdf-over-build
-
-      - name: Install VcXsrv
-        run: |
-          # Download and install VcXsrv
-          Invoke-WebRequest -Uri "https://sourceforge.net/projects/vcxsrv/files/latest/download" -OutFile "vcxsrv.exe"
-          Start-Process -FilePath "vcxsrv.exe" -ArgumentList ":0 -ac -screen 0 1024x768x24" -NoNewWindow -Wait
-
-      - name: Set DISPLAY environment variable
-        run: echo "DISPLAY=localhost:0" >> $GITHUB_ENV
 
 permissions:
     contents: read

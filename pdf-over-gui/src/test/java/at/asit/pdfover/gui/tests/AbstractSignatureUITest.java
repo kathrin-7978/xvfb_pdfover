@@ -89,7 +89,7 @@ public abstract class AbstractSignatureUITest {
     }
 
 
-    //@BeforeEach
+    @BeforeEach
     public final void setupUITest() throws InterruptedException, BrokenBarrierException {
         final CyclicBarrier swtBarrier = new CyclicBarrier(2);
 

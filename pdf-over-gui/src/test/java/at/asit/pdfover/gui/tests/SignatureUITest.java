@@ -16,7 +16,6 @@ public class SignatureUITest extends AbstractSignatureUITest{
 
 	@Test
 	public void simpleUITest1() throws IOException, BrokenBarrierException, InterruptedException {
-		setupUITest();
 		setBaseConfig();
 	}
 

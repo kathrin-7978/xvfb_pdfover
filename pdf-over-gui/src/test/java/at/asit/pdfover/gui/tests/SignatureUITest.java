@@ -16,8 +16,7 @@ public class SignatureUITest extends AbstractSignatureUITest{
 	@Order(1)
 	@Test
 	public void createRefFiles() throws IOException {
-		setBaseConfig();
-		//setCredentials();
+		setCredentials();
 		//testSignature(false, true);
 	}
 

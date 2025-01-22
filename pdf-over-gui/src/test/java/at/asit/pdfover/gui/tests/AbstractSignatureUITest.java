@@ -138,7 +138,13 @@ public abstract class AbstractSignatureUITest {
 
     protected void setCredentials() {
         try {
-            assertTrue(bot.button(str("mobileBKU.number")).isVisible());
+            sm.jumpToState(new PositioningState(sm));
+            String fileName = "./src/test/java/at/asit/pdfover/gui/tests/TestFile.pdf";
+            File documentPath = new File(fileName);
+            sm.status.document = documentPath;
+
+            ICondition widgetExists = new WidgetExitsCondition(str("mobileBKU.number"));
+            bot.waitUntil(widgetExists, 8000);
 
             bot.textWithLabel(str("mobileBKU.number")).setText("TestUser-1902503362");
             bot.textWithLabel(str("mobileBKU.password")).setText("123456789");

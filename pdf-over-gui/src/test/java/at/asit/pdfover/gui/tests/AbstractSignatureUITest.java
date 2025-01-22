@@ -99,7 +99,7 @@ public abstract class AbstractSignatureUITest {
                     currentProfile = getCurrentProfile();
                     setConfig(currentProfile);
 
-                    sm = Main.setup(new String[]{inputFile.getAbsolutePath()});
+                    sm = Main.setup(new String[]{});
                     shell = sm.getMainShell();
 
                     try {
@@ -224,8 +224,10 @@ public abstract class AbstractSignatureUITest {
 
     public void setBaseConfig() {
         try {
-            ICondition widgetExists = new WidgetExitsCondition(str("mobileBKU.number"));
-            bot.waitUntil(widgetExists, 8000);
+            //ICondition widgetExists = new WidgetExitsCondition(str("mobileBKU.number"));
+            //bot.waitUntil(widgetExists, 8000);
+
+            assertTrue(bot.button(str("dataSourceSelection.browse")).isVisible());
         }
         catch (WidgetNotFoundException wnf) {
             fail(wnf.getMessage());

@@ -148,9 +148,7 @@ public abstract class AbstractSignatureUITest {
 
             bot.textWithLabel(str("mobileBKU.number")).setText("TestUser-1902503362");
             bot.textWithLabel(str("mobileBKU.password")).setText("123456789");
-            assertTrue(bot.button(str("common.Ok")).isVisible());
             bot.button(str("common.Ok")).click();
-
 
         }
         catch (WidgetNotFoundException wnf) {
@@ -158,10 +156,7 @@ public abstract class AbstractSignatureUITest {
             fail(wnf.getMessage());
         }
 
-
         File output = new File(getPathOutputFile());
-        logger.info("output: " + output);
-
         ICondition outputExists = new FileExistsCondition(output);
         bot.waitUntil(outputExists, 10000);
 
@@ -169,7 +164,6 @@ public abstract class AbstractSignatureUITest {
             bot.button(str("common.Cancel")).click();
         }
         assertTrue(output.exists(), "Received signed PDF");
-
     }
 
     private void deleteOutputFile() {
@@ -231,31 +225,6 @@ public abstract class AbstractSignatureUITest {
         } catch (IOException e) {
             logger.warn("Failed to create configuration file.");
         }
-    }
-
-    public void setBaseConfig() {
-        try {
-            sm.jumpToState(new PositioningState(sm));
-            String fileName = "./src/test/java/at/asit/pdfover/gui/tests/TestFile.pdf";
-            File documentPath = new File(fileName);
-            sm.status.document = documentPath;
-
-            ICondition widgetExists = new WidgetExitsCondition(str("mobileBKU.number"));
-            bot.waitUntil(widgetExists, 8000);
-            //setCredentials();
-
-            //assertTrue(bot.button(str("dataSourceSelection.browse")).isVisible());
-
-            bot.textWithLabel(str("mobileBKU.number")).setText("TestUser-1902503362");
-            bot.textWithLabel(str("mobileBKU.password")).setText("123456789");
-            bot.button(str("common.Ok")).click();
-
-        }
-        catch (WidgetNotFoundException wnf) {
-            bot.button(str("common.Cancel")).click();
-            fail(wnf.getMessage());
-        }
-
     }
 
     public Profile getCurrentProfile() {

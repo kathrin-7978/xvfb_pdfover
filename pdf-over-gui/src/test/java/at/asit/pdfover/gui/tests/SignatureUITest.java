@@ -12,7 +12,6 @@ import at.asit.pdfover.commons.Profile;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class SignatureUITest extends AbstractSignatureUITest{
-	
 
 	@Order(1)
 	@Test
@@ -22,10 +21,16 @@ public class SignatureUITest extends AbstractSignatureUITest{
 	}
 
 	@Order(2)
-	//@Test
+	@Test
 	public void testSignaturAutoPosition() throws IOException {
 		setCredentials();
 		testSignature(false, false);
 	}
 
+	@Order(3)
+	@Test
+	public void testSignaturAutoPositionNegative() throws IOException {
+		setCredentials();
+		testSignature(true, false);
+	}
 }

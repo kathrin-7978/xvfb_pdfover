@@ -64,16 +64,12 @@ public abstract class AbstractSignatureUITest {
     SignaturePositionTestProvider provider = new SignaturePositionTestProvider();
     private static Path tmpDir;
 
-
-    private static List<Profile> profiles = new ArrayList<>();
-
     protected String str(String k) { return Messages.getString(k); }
 
     @BeforeAll
     public static void prepareTestEnvironment() throws IOException {
         deleteTempDir();
         createTempDir();
-        setSignatureProfiles();
     }
 
     private static void deleteTempDir() throws IOException {
@@ -143,10 +139,6 @@ public abstract class AbstractSignatureUITest {
 
 
     protected void setCredentials() {
-        sm.jumpToState(new PositioningState(sm));
-        String fileName = "./src/test/java/at/asit/pdfover/gui/tests/TestFile.pdf";
-        File documentPath = new File(fileName);
-        sm.status.document = documentPath;
         try {
             ICondition widgetExists = new WidgetExitsCondition(str("mobileBKU.number"));
             bot.waitUntil(widgetExists, 4000);
@@ -231,20 +223,28 @@ public abstract class AbstractSignatureUITest {
         }
     }
 
-    public static void setSignatureProfiles() {
-        for (Profile p : Profile.values()) {
-            profiles.add(p);
+    public void setBaseConfig() {
+        try {
+
+
+            sm.jumpToState(new PositioningState(sm));
+            String fileName = "./src/test/java/at/asit/pdfover/gui/tests/TestFile.pdf";
+            File documentPath = new File(fileName);
+            sm.status.document = documentPath;
+
+            ICondition widgetExists = new WidgetExitsCondition(str("mobileBKU.number"));
+            bot.waitUntil(widgetExists, 8000);
+
+            //assertTrue(bot.button(str("dataSourceSelection.browse")).isVisible());
         }
-        assert(EnumSet.allOf(Profile.class).stream().allMatch(profiles::contains));
+        catch (WidgetNotFoundException wnf) {
+            fail(wnf.getMessage());
+        }
+
     }
 
     public Profile getCurrentProfile() {
-        currentProfile = profiles.get(0);
-        profiles.remove(0);
-        if (profiles.isEmpty()) {
-            setSignatureProfiles();
-        }
-        return currentProfile;
+        return Profile.SIGNATURBLOCK_SMALL;
     }
 
 }

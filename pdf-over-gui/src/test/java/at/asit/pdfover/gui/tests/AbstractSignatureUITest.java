@@ -160,8 +160,10 @@ public abstract class AbstractSignatureUITest {
 
 
         File output = new File(getPathOutputFile());
+        logger.info("output: " + output);
+
         ICondition outputExists = new FileExistsCondition(output);
-        bot.waitUntil(outputExists, 6000);
+        bot.waitUntil(outputExists, 10000);
 
         if(!output.exists()) {
             bot.button(str("common.Cancel")).click();

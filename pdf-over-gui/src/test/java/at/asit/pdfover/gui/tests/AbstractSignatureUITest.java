@@ -19,6 +19,7 @@ import java.util.Properties;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
+import at.asit.pdfover.gui.workflow.states.PositioningState;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -99,7 +100,7 @@ public abstract class AbstractSignatureUITest {
                     currentProfile = getCurrentProfile();
                     setConfig(currentProfile);
 
-                    sm = Main.setup(new String[]{inputFile.getAbsolutePath()});
+                    sm = Main.setup(new String[]{});
                     shell = sm.getMainShell();
 
                     try {
@@ -224,10 +225,17 @@ public abstract class AbstractSignatureUITest {
 
     public void setBaseConfig() {
         try {
-            //ICondition widgetExists = new WidgetExitsCondition(str("mobileBKU.number"));
-            //bot.waitUntil(widgetExists, 8000);
 
-            assertTrue(bot.button(str("dataSourceSelection.browse")).isVisible());
+
+            sm.jumpToState(new PositioningState(sm));
+            String fileName = "./src/test/java/at/asit/pdfover/gui/tests/TestFile.pdf";
+            File documentPath = new File(fileName);
+            sm.status.document = documentPath;
+
+            ICondition widgetExists = new WidgetExitsCondition(str("mobileBKU.number"));
+            bot.waitUntil(widgetExists, 8000);
+
+            //assertTrue(bot.button(str("dataSourceSelection.browse")).isVisible());
         }
         catch (WidgetNotFoundException wnf) {
             fail(wnf.getMessage());

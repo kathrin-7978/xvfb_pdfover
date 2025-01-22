@@ -62,12 +62,16 @@ public abstract class AbstractSignatureUITest {
     SignaturePositionTestProvider provider = new SignaturePositionTestProvider();
     private static Path tmpDir;
 
+
+    private static List<Profile> profiles = new ArrayList<>();
+
     protected String str(String k) { return Messages.getString(k); }
 
     @BeforeAll
     public static void prepareTestEnvironment() throws IOException {
         deleteTempDir();
         createTempDir();
+        setSignatureProfiles();
     }
 
     private static void deleteTempDir() throws IOException {
@@ -149,7 +153,7 @@ public abstract class AbstractSignatureUITest {
             bot.textWithLabel(str("mobileBKU.number")).setText("TestUser-1902503362");
             bot.textWithLabel(str("mobileBKU.password")).setText("123456789");
             assertTrue(bot.button(str("common.Ok")).isVisible());
-            //bot.button(str("common.Ok")).click();
+            bot.button(str("common.Ok")).click();
 
 
         }
@@ -158,7 +162,7 @@ public abstract class AbstractSignatureUITest {
             fail(wnf.getMessage());
         }
 
-        /*
+
 
         File output = new File(getPathOutputFile());
         ICondition outputExists = new FileExistsCondition(output);
@@ -169,7 +173,6 @@ public abstract class AbstractSignatureUITest {
         }
         assertTrue(output.exists(), "Received signed PDF");
 
-         */
     }
 
     private void deleteOutputFile() {
@@ -233,33 +236,19 @@ public abstract class AbstractSignatureUITest {
         }
     }
 
-    public void setBaseConfig() {
-        try {
-            sm.jumpToState(new PositioningState(sm));
-            String fileName = "./src/test/java/at/asit/pdfover/gui/tests/TestFile.pdf";
-            File documentPath = new File(fileName);
-            sm.status.document = documentPath;
-
-            ICondition widgetExists = new WidgetExitsCondition(str("mobileBKU.number"));
-            bot.waitUntil(widgetExists, 8000);
-            //setCredentials();
-
-            //assertTrue(bot.button(str("dataSourceSelection.browse")).isVisible());
-
-            bot.textWithLabel(str("mobileBKU.number")).setText("TestUser-1902503362");
-            bot.textWithLabel(str("mobileBKU.password")).setText("123456789");
-            bot.button(str("common.Ok")).click();
-
+    public static void setSignatureProfiles() {
+        for (Profile p : Profile.values()) {
+            profiles.add(p);
         }
-        catch (WidgetNotFoundException wnf) {
-            bot.button(str("common.Cancel")).click();
-            fail(wnf.getMessage());
-        }
-
+        assert(EnumSet.allOf(Profile.class).stream().allMatch(profiles::contains));
     }
 
     public Profile getCurrentProfile() {
-        currentProfile = Profile.SIGNATURBLOCK_SMALL;
+        currentProfile = profiles.get(0);
+        profiles.remove(0);
+        if (profiles.isEmpty()) {
+            setSignatureProfiles();
+        }
         return currentProfile;
     }
 

@@ -1,9 +1,5 @@
 package at.asit.pdfover.gui.tests;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -43,6 +39,8 @@ import lombok.NonNull;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class AbstractSignatureUITest {
 
@@ -140,8 +138,8 @@ public abstract class AbstractSignatureUITest {
 
     protected void setCredentials() {
         try {
-            ICondition widgetExists = new WidgetExitsCondition(str("mobileBKU.number"));
-            bot.waitUntil(widgetExists, 4000);
+            assertTrue(bot.button(str("mobileBKU.number")).isVisible());
+
             bot.textWithLabel(str("mobileBKU.number")).setText("TestUser-1902503362");
             bot.textWithLabel(str("mobileBKU.password")).setText("123456789");
             bot.button(str("common.Ok")).click();
@@ -166,7 +164,7 @@ public abstract class AbstractSignatureUITest {
         if (getPathOutputFile() != null) {
             File outputFile = new File(getPathOutputFile());
             outputFile.delete();
-            assertTrue(!outputFile.exists());
+            assertFalse(outputFile.exists());
             logger.info("Deleted output file");
         }
     }
@@ -225,8 +223,6 @@ public abstract class AbstractSignatureUITest {
 
     public void setBaseConfig() {
         try {
-
-
             sm.jumpToState(new PositioningState(sm));
             String fileName = "./src/test/java/at/asit/pdfover/gui/tests/TestFile.pdf";
             File documentPath = new File(fileName);
@@ -234,17 +230,25 @@ public abstract class AbstractSignatureUITest {
 
             ICondition widgetExists = new WidgetExitsCondition(str("mobileBKU.number"));
             bot.waitUntil(widgetExists, 8000);
+            //setCredentials();
 
             //assertTrue(bot.button(str("dataSourceSelection.browse")).isVisible());
+
+            bot.textWithLabel(str("mobileBKU.number")).setText("TestUser-1902503362");
+            bot.textWithLabel(str("mobileBKU.password")).setText("123456789");
+            bot.button(str("common.Ok")).click();
+
         }
         catch (WidgetNotFoundException wnf) {
+            bot.button(str("common.Cancel")).click();
             fail(wnf.getMessage());
         }
 
     }
 
     public Profile getCurrentProfile() {
-        return Profile.SIGNATURBLOCK_SMALL;
+        currentProfile = Profile.SIGNATURBLOCK_SMALL;
+        return currentProfile;
     }
 
 }

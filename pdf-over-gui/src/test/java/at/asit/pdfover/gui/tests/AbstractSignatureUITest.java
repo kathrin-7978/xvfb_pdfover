@@ -65,7 +65,6 @@ public abstract class AbstractSignatureUITest {
 
     protected String str(String k) { return Messages.getString(k); }
 
-    /*
     @BeforeAll
     public static void prepareTestEnvironment() throws IOException {
         deleteTempDir();
@@ -87,9 +86,9 @@ public abstract class AbstractSignatureUITest {
         tmpDir.toFile().deleteOnExit();
         outputDir = FilenameUtils.separatorsToSystem(tmpDir.toString());
     }
- */
 
-    //@BeforeEach
+
+    @BeforeEach
     public final void setupUITest() throws InterruptedException, BrokenBarrierException {
         final CyclicBarrier swtBarrier = new CyclicBarrier(2);
 
@@ -223,6 +222,16 @@ public abstract class AbstractSignatureUITest {
         }
     }
 
+    public void setBaseConfig() {
+        try {
+            ICondition widgetExists = new WidgetExitsCondition(str("mobileBKU.number"));
+            bot.waitUntil(widgetExists, 8000);
+        }
+        catch (WidgetNotFoundException wnf) {
+            fail(wnf.getMessage());
+        }
+
+    }
 
     public Profile getCurrentProfile() {
         return Profile.SIGNATURBLOCK_SMALL;

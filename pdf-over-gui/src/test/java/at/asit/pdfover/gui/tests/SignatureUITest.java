@@ -1,6 +1,7 @@
 package at.asit.pdfover.gui.tests;
 
 import java.io.IOException;
+import java.util.concurrent.BrokenBarrierException;
 
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -15,26 +16,18 @@ public class SignatureUITest extends AbstractSignatureUITest{
 
 	@Order(1)
 	@Test
-	public void createRefFiles() throws IOException {
+	public void createRefFiles() throws IOException, BrokenBarrierException, InterruptedException {
+		setupUITest();
 		setCredentials();
 		testSignature(false, true);
 	}
 
 	@Order(2)
 	@Test
-	public void testSignaturAutoPosition() throws IOException {
+	public void testSignaturAutoPosition() throws IOException, BrokenBarrierException, InterruptedException {
+		setupUITest();
 		setCredentials();
 		testSignature(false, false);
 	}
 
-	/*
-	@Order(3)
-	@ParameterizedTest
-	@EnumSource(Profile.class)
-	public void testSignaturAutoPositionNegative(Profile profile) throws IOException {
-		setCredentials();
-		testSignature(true, false);
-	}
-
-	 */
 }

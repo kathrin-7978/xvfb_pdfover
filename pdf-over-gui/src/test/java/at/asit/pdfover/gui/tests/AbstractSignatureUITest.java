@@ -63,16 +63,13 @@ public abstract class AbstractSignatureUITest {
     SignaturePositionTestProvider provider = new SignaturePositionTestProvider();
     private static Path tmpDir;
 
-
-    private static List<Profile> profiles = new ArrayList<>();
-
     protected String str(String k) { return Messages.getString(k); }
 
+    /*
     @BeforeAll
     public static void prepareTestEnvironment() throws IOException {
         deleteTempDir();
         createTempDir();
-        setSignatureProfiles();
     }
 
     private static void deleteTempDir() throws IOException {
@@ -90,9 +87,9 @@ public abstract class AbstractSignatureUITest {
         tmpDir.toFile().deleteOnExit();
         outputDir = FilenameUtils.separatorsToSystem(tmpDir.toString());
     }
+ */
 
-
-    @BeforeEach
+    //@BeforeEach
     public final void setupUITest() throws InterruptedException, BrokenBarrierException {
         final CyclicBarrier swtBarrier = new CyclicBarrier(2);
 
@@ -226,21 +223,8 @@ public abstract class AbstractSignatureUITest {
         }
     }
 
-    public static void setSignatureProfiles() {
-        for (Profile p : Profile.values()) {
-            profiles.add(p);
-        }
-        assert(EnumSet.allOf(Profile.class).stream().allMatch(profiles::contains));
-    }
 
     public Profile getCurrentProfile() {
-        //currentProfile = profiles.get(0);
-        currentProfile = Profile.SIGNATURBLOCK_SMALL;
-        profiles.remove(0);
-        if (profiles.isEmpty()) {
-            setSignatureProfiles();
-        }
-        //return currentProfile;
         return Profile.SIGNATURBLOCK_SMALL;
     }
 

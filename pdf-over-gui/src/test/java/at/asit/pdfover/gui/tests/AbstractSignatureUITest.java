@@ -149,7 +149,7 @@ public abstract class AbstractSignatureUITest {
             bot.textWithLabel(str("mobileBKU.number")).setText("TestUser-1902503362");
             bot.textWithLabel(str("mobileBKU.password")).setText("123456789");
             assertTrue(bot.button(str("common.Ok")).isVisible());
-            //bot.button(str("common.Ok")).click();
+            bot.button(str("common.Ok")).click();
 
 
         }
@@ -158,7 +158,6 @@ public abstract class AbstractSignatureUITest {
             fail(wnf.getMessage());
         }
 
-        /*
 
         File output = new File(getPathOutputFile());
         ICondition outputExists = new FileExistsCondition(output);
@@ -169,7 +168,6 @@ public abstract class AbstractSignatureUITest {
         }
         assertTrue(output.exists(), "Received signed PDF");
 
-         */
     }
 
     private void deleteOutputFile() {

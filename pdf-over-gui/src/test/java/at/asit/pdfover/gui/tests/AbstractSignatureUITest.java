@@ -143,12 +143,10 @@ public abstract class AbstractSignatureUITest {
 
 
     protected void setCredentials() {
-
         sm.jumpToState(new PositioningState(sm));
         String fileName = "./src/test/java/at/asit/pdfover/gui/tests/TestFile.pdf";
         File documentPath = new File(fileName);
         sm.status.document = documentPath;
-
         try {
             ICondition widgetExists = new WidgetExitsCondition(str("mobileBKU.number"));
             bot.waitUntil(widgetExists, 4000);

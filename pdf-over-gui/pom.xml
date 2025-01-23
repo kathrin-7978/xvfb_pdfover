@@ -155,9 +155,7 @@
 					<configuration>
 						<forkCount>1</forkCount>
 						<reuseForks>false</reuseForks>
-						<argLine>
-							${env.OS} == 'Windows_NT' ? '' : '-XstartOnFirstThread -Xmx1024m'
-						</argLine>
+						<argLine>-XstartOnFirstThread</argLine>
 					</configuration>
     				<dependencies>
         				<dependency>
@@ -166,29 +164,6 @@
             				<version>1.1.0</version>
         				</dependency>
     				</dependencies>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-dependency-plugin</artifactId>
-					<executions>
-						<execution>
-							<id>copy-product-dependencies</id>
-							<phase>install</phase> <!-- This is where the issue arises -->
-							<goals>
-								<goal>copy-dependencies</goal>
-							</goals>
-							<configuration>
-								<outputDirectory>${pdfover-build.staging-dir}/lib</outputDirectory>
-								<excludeTransitive>false</excludeTransitive>
-								<stripVersion>false</stripVersion>
-								<overWriteReleases>true</overWriteReleases>
-								<overWriteSnapshots>true</overWriteSnapshots>
-								<overWriteIfNewer>true</overWriteIfNewer>
-								<excludeScope>system</excludeScope>
-								<excludeGroupIds>org.codehaus.izpack,org.eclipse.swt</excludeGroupIds>
-							</configuration>
-						</execution>
-					</executions>
 				</plugin>
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>

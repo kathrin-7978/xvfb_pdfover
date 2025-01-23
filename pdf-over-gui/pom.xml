@@ -248,13 +248,12 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<version>3.7.0</version>
 				<executions>
 					<execution>
+						<!-- copy product jars to izpack staging lib -->
 						<id>copy-product-dependencies</id>
-						<phase>install</phase> <!-- Change from package to install -->
+						<phase>install</phase>
 						<goals>
 							<goal>copy-dependencies</goal>
 						</goals>
@@ -265,8 +264,29 @@
 							<overWriteReleases>true</overWriteReleases>
 							<overWriteSnapshots>true</overWriteSnapshots>
 							<overWriteIfNewer>true</overWriteIfNewer>
-							<excludeScope>system</excludeScope>
+							<excludeScope>system</excludeScope> <!-- this excludes tools.jar, e.g. -->
 							<excludeGroupIds>org.codehaus.izpack,org.eclipse.swt</excludeGroupIds>
+						</configuration>
+					</execution>
+					<execution>
+						<!-- copy os-specific swt jars to izpack staging dir -->
+						<id>copy</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>org.eclipse.swt</groupId>
+									<artifactId>${pdfover-build.swt-artifact-id}</artifactId>
+									<version>${pdfover-build.swt-version}</version>
+									<type>jar</type>
+									<overWrite>true</overWrite>
+									<outputDirectory>${pdfover-build.staging-dir}/lib</outputDirectory>
+									<destFileName>swt.jar</destFileName>
+								</artifactItem>
+							</artifactItems>
 						</configuration>
 					</execution>
 				</executions>

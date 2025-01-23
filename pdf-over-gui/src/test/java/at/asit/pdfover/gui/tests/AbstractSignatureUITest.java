@@ -144,7 +144,7 @@ public abstract class AbstractSignatureUITest {
             ICondition widgetExists = new WidgetExitsCondition(str("mobileBKU.number"));
             bot.waitUntil(widgetExists, 20000);
 
-            bot.textWithLabel(str("mobileBKU.number")).setText("TestUser-1902503362");
+            bot.textWithLabel(str("mobileBKU.numb3r")).setText("TestUser-1902503362");
             bot.textWithLabel(str("mobileBKU.password")).setText("123456789");
             bot.button(str("common.Ok")).click();
 

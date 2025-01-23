@@ -42,7 +42,6 @@
 			<groupId>at.a-sit</groupId>
 			<artifactId>pdf-over-signer</artifactId>
 			<version>${project.parent.version}</version>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>commons-httpclient</groupId>
@@ -253,7 +252,7 @@
 					<execution>
 						<!-- copy product jars to izpack staging lib -->
 						<id>copy-product-dependencies</id>
-						<phase>install</phase>
+						<phase>package</phase>
 						<goals>
 							<goal>copy-dependencies</goal>
 						</goals>

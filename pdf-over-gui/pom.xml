@@ -134,6 +134,13 @@
 				<artifactId>org.eclipse.swt</artifactId>
 				<version>4950r5</version> <!-- Ensure this version is compatible with arm64 -->
 			</dependency>
+			<!-- https://mvnrepository.com/artifact/org.eclipse.platform/org.eclipse.swt.cocoa.macosx.x86_64 -->
+			<dependency>
+				<groupId>org.eclipse.platform</groupId>
+				<artifactId>org.eclipse.swt.cocoa.macosx.x86_64</artifactId>
+				<version>3.128.0</version>
+			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 

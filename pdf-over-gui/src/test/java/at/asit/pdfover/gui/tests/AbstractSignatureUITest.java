@@ -122,7 +122,7 @@ public abstract class AbstractSignatureUITest {
         bot =  new SWTBot(shell);
         swtbs = bot.activeShell();
         swtbs.activate();
-      git   });
+         });
     }
 
     @AfterEach

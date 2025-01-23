@@ -13,6 +13,8 @@
 		<pdfover-build.output-dir>${pdfover-build.root-dir}/pdf-over-build</pdfover-build.output-dir>
 		<pdfover-build.staging-dir>${project.build.directory}/staging/${pdfover-build.output-filename}</pdfover-build.staging-dir>
 		<pdfover-build.swt-version>4.23</pdfover-build.swt-version>
+		<pdfover-build.swt-version>4.23</pdfover-build.swt-version>
+		<pdfover-build.swt-artifact-id>org.eclipse.swt.cocoa.macosx.aarch64</pdfover-build.swt-artifact-id> <!-- Correct for arm64 -->
 	</properties>
 
 	<dependencies>
@@ -140,7 +142,11 @@
 				<artifactId>org.eclipse.swt.cocoa.macosx.x86_64</artifactId>
 				<version>3.128.0</version>
 			</dependency>
-
+			<dependency>
+				<groupId>org.eclipse.swt</groupId>
+				<artifactId>${pdfover-build.swt-artifact-id}</artifactId>
+				<version>${pdfover-build.swt-version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -150,15 +156,11 @@
 				<!-- Ignore/Execute plugin execution -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
-    				<artifactId>maven-surefire-plugin</artifactId>
-    				<version>2.19.1</version>
-    				<dependencies>
-        				<dependency>
-            				<groupId>org.junit.platform</groupId>
-            				<artifactId>junit-platform-surefire-provider</artifactId>
-            				<version>1.1.0</version>
-        				</dependency>
-    				</dependencies>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>3.0.0-M5</version> <!-- Use the latest version -->
+					<configuration>
+						<argLine>-Djava.library.path=/path/to/swt/libs</argLine> <!-- Update this path -->
+					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
@@ -543,6 +545,9 @@
 				<pdfover-build.bundled-jre.folder-in-archive>jdk-17.0.3+7-jre</pdfover-build.bundled-jre.folder-in-archive>
 				<pdfover-build.os-name>linux</pdfover-build.os-name>
 				<pdfover-build.output-filename-without-jar>pdf-over_linux-x86_64</pdfover-build.output-filename-without-jar> <!-- used for izpack builds -->
+				<pdfover-build.swt-version>4.23</pdfover-build.swt-version>
+				<pdfover-build.swt-artifact-id>org.eclipse.swt.cocoa.macosx.aarch64</pdfover-build.swt-artifact-id> <!-- Correct for arm64 -->
+
 			</properties>
 			<build>
 				<plugins>
@@ -716,6 +721,7 @@
 				<pdfover-build.bundled-jre.folder-in-archive>jdk-17.0.3+7-jre/Contents/Home</pdfover-build.bundled-jre.folder-in-archive>
 				<pdfover-build.os-name>mac</pdfover-build.os-name>
 				<pdfover-build.output-filename>pdf-over_mac-x86_64.zip</pdfover-build.output-filename>
+				<pdfover-build.swt-artifact-id>org.eclipse.swt.cocoa.macosx.aarch64</pdfover-build.swt-artifact-id>
 			</properties>
 			<build>
 				<plugins>

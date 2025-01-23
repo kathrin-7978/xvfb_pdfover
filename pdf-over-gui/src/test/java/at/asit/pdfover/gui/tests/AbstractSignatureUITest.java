@@ -93,15 +93,16 @@ public abstract class AbstractSignatureUITest {
     @BeforeEach
     public final void setupUITest() throws InterruptedException, BrokenBarrierException {
         final CyclicBarrier swtBarrier = new CyclicBarrier(2);
-        currentProfile = getCurrentProfile();
-        setConfig(currentProfile);
+
 
         if (uiThread == null) {
             uiThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
+                    currentProfile = getCurrentProfile();
+                    setConfig(currentProfile);
 
-
+                    Display.getDefault().syncExec(() -> {
                     sm = Main.setup(new String[]{inputFile.getAbsolutePath()});
                     shell = sm.getMainShell();
 
@@ -111,6 +112,7 @@ public abstract class AbstractSignatureUITest {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    });
                 }
             });
             uiThread.setDaemon(true);
@@ -118,9 +120,11 @@ public abstract class AbstractSignatureUITest {
         }
         swtBarrier.await();
 
+        Display.getDefault().syncExec(() -> {
         bot =  new SWTBot(shell);
         swtbs = bot.activeShell();
         swtbs.activate();
+        });
     }
 
     @AfterEach
@@ -141,6 +145,8 @@ public abstract class AbstractSignatureUITest {
 
 
     protected void setCredentials() {
+        //currentProfile = getCurrentProfile();
+        //setConfig(currentProfile);
         try {
             ICondition widgetExists = new WidgetExitsCondition(str("mobileBKU.number"));
             bot.waitUntil(widgetExists, 20000);
@@ -202,9 +208,6 @@ public abstract class AbstractSignatureUITest {
 
         Map<String,String> testParams = Map.ofEntries(
                 Map.entry(Constants.CFG_BKU, cm.getDefaultBKUPersistent().name()),
-                Map.entry(Constants.CFG_KEYSTORE_PASSSTORETYPE, "memory"),
-                Map.entry(Constants.CFG_LOCALE, cm.getInterfaceLocale().toString()),
-                Map.entry(Constants.CFG_LOGO_ONLY_SIZE, Double.toString(cm.getLogoOnlyTargetSize())),
                 Map.entry(Constants.CFG_MAINWINDOW_SIZE, size.x + "," + size.y),
                 Map.entry(Constants.CFG_OUTPUT_FOLDER, outputDir),
                 Map.entry(Constants.CFG_POSTFIX, postFix),

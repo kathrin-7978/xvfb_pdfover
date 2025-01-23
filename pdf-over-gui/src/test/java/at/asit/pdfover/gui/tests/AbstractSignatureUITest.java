@@ -100,7 +100,7 @@ public abstract class AbstractSignatureUITest {
                 public void run() {
                     currentProfile = getCurrentProfile();
                     setConfig();
-                    //Display.getDefault().syncExec(() -> {
+                    Display.getDefault().syncExec(() -> {
                     sm = Main.setup(new String[]{inputFile.getAbsolutePath()});
                     shell = sm.getMainShell();
 
@@ -110,7 +110,7 @@ public abstract class AbstractSignatureUITest {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    //});
+                    });
                 }
             });
             uiThread.setDaemon(true);
@@ -118,11 +118,11 @@ public abstract class AbstractSignatureUITest {
         }
         swtBarrier.await();
 
-       // Display.getDefault().syncExec(() -> {
+        Display.getDefault().syncExec(() -> {
         bot =  new SWTBot(shell);
         swtbs = bot.activeShell();
         swtbs.activate();
-      //  });
+      git   });
     }
 
     @AfterEach

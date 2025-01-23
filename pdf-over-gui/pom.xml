@@ -13,6 +13,7 @@
 		<pdfover-build.output-dir>${pdfover-build.root-dir}/pdf-over-build</pdfover-build.output-dir>
 		<pdfover-build.staging-dir>${project.build.directory}/staging/${pdfover-build.output-filename}</pdfover-build.staging-dir>
 		<pdfover-build.swt-version>4.23</pdfover-build.swt-version>
+		<pdfover-build.swt-artifact-id>org.eclipse.swt.gtk.linux.x86_64</pdfover-build.swt-artifact-id> <!-- Ensure this is defined -->
 	</properties>
 
 	<dependencies>
@@ -171,7 +172,7 @@
 					<executions>
 						<execution>
 							<id>copy-product-dependencies</id>
-							<phase>install</phase> <!-- This is where the issue arises -->
+							<phase>package</phase> <!-- This is where the issue arises -->
 							<goals>
 								<goal>copy-dependencies</goal>
 							</goals>

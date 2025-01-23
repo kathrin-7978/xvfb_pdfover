@@ -99,8 +99,7 @@ public abstract class AbstractSignatureUITest {
             uiThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    currentProfile = getCurrentProfile();
-                    setConfig(currentProfile);
+
 
                     Display.getDefault().syncExec(() -> {
                     sm = Main.setup(new String[]{inputFile.getAbsolutePath()});
@@ -145,8 +144,8 @@ public abstract class AbstractSignatureUITest {
 
 
     protected void setCredentials() {
-        //currentProfile = getCurrentProfile();
-        //setConfig(currentProfile);
+        currentProfile = getCurrentProfile();
+        setConfig(currentProfile);
         try {
             ICondition widgetExists = new WidgetExitsCondition(str("mobileBKU.number"));
             bot.waitUntil(widgetExists, 20000);

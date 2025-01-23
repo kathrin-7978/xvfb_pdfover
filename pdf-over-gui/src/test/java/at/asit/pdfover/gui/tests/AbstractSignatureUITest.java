@@ -99,8 +99,8 @@ public abstract class AbstractSignatureUITest {
                 @Override
                 public void run() {
                     currentProfile = getCurrentProfile();
-                    setConfig(currentProfile);
-
+                    setConfig();
+                    //Display.getDefault().syncExec(() -> {
                     sm = Main.setup(new String[]{inputFile.getAbsolutePath()});
                     shell = sm.getMainShell();
 
@@ -110,6 +110,7 @@ public abstract class AbstractSignatureUITest {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    //});
                 }
             });
             uiThread.setDaemon(true);
@@ -117,9 +118,11 @@ public abstract class AbstractSignatureUITest {
         }
         swtBarrier.await();
 
+       // Display.getDefault().syncExec(() -> {
         bot =  new SWTBot(shell);
         swtbs = bot.activeShell();
         swtbs.activate();
+      //  });
     }
 
     @AfterEach
@@ -195,7 +198,7 @@ public abstract class AbstractSignatureUITest {
 
     private static void setProperty(@NonNull Properties props, @NonNull String key, @NonNull String value) { props.setProperty(key, value); }
 
-    private void setConfig(Profile currentProfile) {
+    private void setConfig() {
         ConfigurationManager cm = new ConfigurationManager();
         Point size = cm.getMainWindowSize();
 

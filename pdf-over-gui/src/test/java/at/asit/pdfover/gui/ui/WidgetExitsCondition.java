@@ -11,7 +11,7 @@ public class WidgetExitsCondition extends DefaultCondition {
 	}
 	
 	@Override
-	public boolean test() throws Exception {
+	public boolean test() {
 		return bot.textWithLabel(widgetName).isVisible();
 	}
 

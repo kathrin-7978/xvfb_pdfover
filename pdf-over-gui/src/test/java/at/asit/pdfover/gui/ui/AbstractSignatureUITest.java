@@ -71,11 +71,7 @@ public class AbstractSignatureUITest {
     }
 
     public void closeShell() throws InterruptedException {
-        Display.getDefault().syncExec(new Runnable() {
-            public void run() {
-                shell.close();
-            }
-        });
+        Display.getDefault().syncExec(() -> shell.close());
         uiThread.join();
         uiThread = null;
     }

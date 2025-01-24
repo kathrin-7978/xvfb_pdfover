@@ -1,9 +1,9 @@
 name: Build Linux
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "feature/testing" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "feature/testing" ]
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
@@ -19,8 +19,19 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
           cache: maven
+
+      - name: Set up Xvfb for Linux
+        run: |
+          sudo apt-get install -y xvfb
+          Xvfb :99 -screen 0 1024x768x24 &
+          export DISPLAY=:99
+
       - name: Build with Maven
-        run: mvn -B clean install -Plinux -Pci-build -Dno-native-profile
+        run: mvn clean install -Plinux -Pci-build -Dno-native-profile
+
+      - name: Run Tests
+        run: mvn test -Plinux -Pci-build -Dno-native-profile
+
       - name: Describe current commit
         run: echo "commit_sha=${GITHUB_SHA::7}" >> $GITHUB_ENV
       - name: Remove Previous Build Artifacts
@@ -36,7 +47,7 @@ jobs:
       - name: Tar bundle
         run: tar -C pdf-over-build -cvf pdf-over.tar ./
       - name: Upload Build Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: pdf-over-${{ github.event.pull_request.number || github.ref_name }}-${{ env.commit_sha }}-linux-x86_64
           path: pdf-over.tar

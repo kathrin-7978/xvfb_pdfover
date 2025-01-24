@@ -1,9 +1,9 @@
 name: Build Windows
 on:
   push:
-    branches: [ "feature/automated-ui-tests" ]
+    branches: [ "feature/testing" ]
   pull_request:
-    branches: [ "feature/automated-ui-tests" ]
+    branches: [ "feature/testing" ]
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
@@ -20,9 +20,7 @@ jobs:
           distribution: 'adopt'
           cache: maven
       - name: Build with Maven
-        run: mvn -B clean install -Pwindows -Pci-build -Dno-native-profile
-      - name: Run headless test
-        run: mvn test
+        run: mvn -B test -Pwindows -Pci-build -Dno-native-profile -X -e
       - name: Describe current commit
         run: echo "commit_sha=$("${{ github.sha }}".SubString(0,7))" >> $env:GITHUB_ENV
       - name: Remove Previous Build Artifacts
@@ -40,5 +38,5 @@ jobs:
           path: pdf-over-build
 
 permissions:
-    contents: read
-    actions: write
+  contents: read
+  actions: write

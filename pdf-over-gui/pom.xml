@@ -3,7 +3,7 @@
 	<parent>
 		<artifactId>pdf-over</artifactId>
 		<groupId>at.a-sit</groupId>
-		<version>4.4.6-SNAPSHOT</version>
+		<version>4.4.7-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>pdf-over-gui</artifactId>
@@ -13,6 +13,7 @@
 		<pdfover-build.output-dir>${pdfover-build.root-dir}/pdf-over-build</pdfover-build.output-dir>
 		<pdfover-build.staging-dir>${project.build.directory}/staging/${pdfover-build.output-filename}</pdfover-build.staging-dir>
 		<pdfover-build.swt-version>4.23</pdfover-build.swt-version>
+		<pdfover-build.swt-artifact-id>org.eclipse.swt.gtk.linux.x86_64</pdfover-build.swt-artifact-id> <!-- Ensure this is defined -->
 	</properties>
 
 	<dependencies>
@@ -20,6 +21,12 @@
 			<groupId>org.eclipse.swt</groupId>
 			<artifactId>${pdfover-build.swt-artifact-id}</artifactId>
 			<version>${pdfover-build.swt-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.4</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
@@ -50,9 +57,9 @@
 			<artifactId>commons-io</artifactId>
 		</dependency>
 		<dependency>
-		  <groupId>com.google.code.gson</groupId>
-		  <artifactId>gson</artifactId>
-		  <version>2.9.0</version>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.9.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.json</groupId>
@@ -123,6 +130,18 @@
 				<artifactId>commons-collections4</artifactId>
 				<version>4.1</version>
 			</dependency>
+			<dependency>
+				<groupId>org.eclipse.platform</groupId>
+				<artifactId>org.eclipse.swt</artifactId>
+				<version>4950r5</version> <!-- Ensure this version is compatible with arm64 -->
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/org.eclipse.platform/org.eclipse.swt.cocoa.macosx.x86_64 -->
+			<dependency>
+				<groupId>org.eclipse.platform</groupId>
+				<artifactId>org.eclipse.swt.cocoa.macosx.x86_64</artifactId>
+				<version>3.128.0</version>
+			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 
@@ -134,6 +153,11 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>2.19.1</version>
+					<configuration>
+						<forkCount>1</forkCount>
+						<reuseForks>false</reuseForks>
+						<argLine>-XstartOnFirstThread</argLine>
+					</configuration>
 					<dependencies>
 						<dependency>
 							<groupId>org.junit.platform</groupId>
@@ -141,6 +165,29 @@
 							<version>1.1.0</version>
 						</dependency>
 					</dependencies>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<executions>
+						<execution>
+							<id>copy-product-dependencies</id>
+							<phase>package</phase> <!-- This is where the issue arises -->
+							<goals>
+								<goal>copy-dependencies</goal>
+							</goals>
+							<configuration>
+								<outputDirectory>${pdfover-build.staging-dir}/lib</outputDirectory>
+								<excludeTransitive>false</excludeTransitive>
+								<stripVersion>false</stripVersion>
+								<overWriteReleases>true</overWriteReleases>
+								<overWriteSnapshots>true</overWriteSnapshots>
+								<overWriteIfNewer>true</overWriteIfNewer>
+								<excludeScope>system</excludeScope>
+								<excludeGroupIds>org.codehaus.izpack,org.eclipse.swt</excludeGroupIds>
+							</configuration>
+						</execution>
+					</executions>
 				</plugin>
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
@@ -521,8 +568,8 @@
 			</activation>
 			<properties>
 				<pdfover-build.swt-artifact-id>org.eclipse.swt.gtk.linux.x86_64</pdfover-build.swt-artifact-id>
-				<pdfover-build.bundled-jre.archive-filename>OpenJDK17U-jre_x64_linux_hotspot_17.0.12_7.tar.gz</pdfover-build.bundled-jre.archive-filename>
-				<pdfover-build.bundled-jre.folder-in-archive>jdk-17.0.12+7-jre</pdfover-build.bundled-jre.folder-in-archive>
+				<pdfover-build.bundled-jre.archive-filename>OpenJDK17U-jre_x64_linux_hotspot_17.0.3_7.tar.gz</pdfover-build.bundled-jre.archive-filename>
+				<pdfover-build.bundled-jre.folder-in-archive>jdk-17.0.3+7-jre</pdfover-build.bundled-jre.folder-in-archive>
 				<pdfover-build.os-name>linux</pdfover-build.os-name>
 				<pdfover-build.output-filename-without-jar>pdf-over_linux-x86_64</pdfover-build.output-filename-without-jar> <!-- used for izpack builds -->
 			</properties>
@@ -625,8 +672,8 @@
 			</activation>
 			<properties>
 				<pdfover-build.swt-artifact-id>org.eclipse.swt.win32.win32.x86_64</pdfover-build.swt-artifact-id>
-				<pdfover-build.bundled-jre.archive-filename>OpenJDK17U-jre_x64_windows_hotspot_17.0.12_7.zip</pdfover-build.bundled-jre.archive-filename>
-				<pdfover-build.bundled-jre.folder-in-archive>jdk-17.0.12+7-jre</pdfover-build.bundled-jre.folder-in-archive>
+				<pdfover-build.bundled-jre.archive-filename>OpenJDK17U-jre_x64_windows_hotspot_17.0.3_7.zip</pdfover-build.bundled-jre.archive-filename>
+				<pdfover-build.bundled-jre.folder-in-archive>jdk-17.0.3+7-jre</pdfover-build.bundled-jre.folder-in-archive>
 				<pdfover-build.os-name>windows</pdfover-build.os-name>
 				<pdfover-build.output-filename>pdf-over_windows-x86_64.zip</pdfover-build.output-filename>
 			</properties>
@@ -694,8 +741,8 @@
 			</activation>
 			<properties>
 				<pdfover-build.swt-artifact-id>org.eclipse.swt.cocoa.macosx.x86_64</pdfover-build.swt-artifact-id>
-				<pdfover-build.bundled-jre.archive-filename>OpenJDK17U-jre_x64_mac_hotspot_17.0.12_7.zip</pdfover-build.bundled-jre.archive-filename>
-				<pdfover-build.bundled-jre.folder-in-archive>jdk-17.0.12+7-jre/Contents/Home</pdfover-build.bundled-jre.folder-in-archive>
+				<pdfover-build.bundled-jre.archive-filename>OpenJDK17U-jre_x64_mac_hotspot_17.0.3_7.zip</pdfover-build.bundled-jre.archive-filename>
+				<pdfover-build.bundled-jre.folder-in-archive>jdk-17.0.3+7-jre/Contents/Home</pdfover-build.bundled-jre.folder-in-archive>
 				<pdfover-build.os-name>mac</pdfover-build.os-name>
 				<pdfover-build.output-filename>pdf-over_mac-x86_64.zip</pdfover-build.output-filename>
 			</properties>
@@ -728,8 +775,8 @@
 			</activation>
 			<properties>
 				<pdfover-build.swt-artifact-id>org.eclipse.swt.cocoa.macosx.aarch64</pdfover-build.swt-artifact-id>
-				<pdfover-build.bundled-jre.archive-filename>OpenJDK17U-jre_aarch64_mac_hotspot_17.0.12_7.zip</pdfover-build.bundled-jre.archive-filename>
-				<pdfover-build.bundled-jre.folder-in-archive>jdk-17.0.12+7-jre/Contents/Home</pdfover-build.bundled-jre.folder-in-archive>
+				<pdfover-build.bundled-jre.archive-filename>OpenJDK17U-jre_aarch64_mac_hotspot_17.0.2_8.zip</pdfover-build.bundled-jre.archive-filename>
+				<pdfover-build.bundled-jre.folder-in-archive>jdk-17.0.2+8-jre/Contents/Home</pdfover-build.bundled-jre.folder-in-archive>
 				<pdfover-build.os-name>mac</pdfover-build.os-name>
 				<pdfover-build.output-filename>pdf-over_mac-aarch64.zip</pdfover-build.output-filename>
 			</properties>

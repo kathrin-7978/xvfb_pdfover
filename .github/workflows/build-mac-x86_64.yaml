@@ -20,7 +20,9 @@ jobs:
           distribution: 'adopt'
           cache: maven
       - name: Build with Maven
-        run: mvn -B clean install test -Pmac -Pci-build -Dno-native-profile
+        run: mvn -B clean install -Pmac -Pci-build -Dno-native-profile
+      - name: Run headless test
+        run: mvn test -Pmac -Pci-build -Dno-native-profile
       - name: Describe current commit
         run: echo "commit_sha=${GITHUB_SHA::7}" >> $GITHUB_ENV
       - name: Remove Previous Build Artifacts
@@ -38,7 +40,7 @@ jobs:
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: pdf-over-${{ github.event.pull_request.number || github.ref_name }}-${{ env.commit_sha }}-macos-x86_64
+          name: pdf-over-feature-testing-${{ env.commit_sha }}}-macos-x86_64
           path: pdf-over.tar
 
 permissions:

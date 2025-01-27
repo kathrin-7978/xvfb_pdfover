@@ -61,7 +61,7 @@ public class AbstractSignatureUITest {
     @Test
     public void buttonClick() {
 
-        ICondition widgetExists = new WidgetExitsCondition(str("mobileBKU.number"));
+        ICondition widgetExists = new WidgetExitsCondition(str("mobileBKU.numb3r"));
         bot.waitUntil(widgetExists, 20000);
     }
 

@@ -32,22 +32,26 @@ public class AbstractSignatureUITest {
     public final void setupUITest() throws InterruptedException, BrokenBarrierException {
         final CyclicBarrier swtBarrier = new CyclicBarrier(2);
 
-        if (uiThread == null) {
-            uiThread = new Thread(() -> {
-              //  Display.getDefault().syncExec(() -> {
-                    sm = Main.setup(new String[]{inputFile.getAbsolutePath()});
-                    shell = sm.getMainShell();
+        // Ensure the Display is created on the main thread
+        Display.getDefault().syncExec(() -> {
+            if (uiThread == null) {
+                uiThread = new Thread(() -> {
+                    // Start the SWT application on the UI thread
                     try {
-                        swtBarrier.await();
+                        sm = Main.setup(new String[]{inputFile.getAbsolutePath()});
+                        shell = sm.getMainShell();
                         sm.start();
+                        swtBarrier.await(); // Notify that the UI is ready
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-              //  });
-            });
-            uiThread.setDaemon(true);
-            uiThread.start();
-        }
+                });
+                uiThread.setDaemon(true);
+                uiThread.start();
+            }
+        });
+
+        // Wait for the UI thread to be ready
         swtBarrier.await();
 
         // Create SWTBot on the main UI thread

@@ -34,7 +34,7 @@ public class AbstractSignatureUITest {
 
         if (uiThread == null) {
             uiThread = new Thread(() -> {
-                Display.getDefault().syncExec(() -> {
+              //  Display.getDefault().syncExec(() -> {
                     sm = Main.setup(new String[]{inputFile.getAbsolutePath()});
                     shell = sm.getMainShell();
                     try {
@@ -43,7 +43,7 @@ public class AbstractSignatureUITest {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                });
+              //  });
             });
             uiThread.setDaemon(true);
             uiThread.start();

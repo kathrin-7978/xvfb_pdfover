@@ -34,14 +34,12 @@ public class AbstractSignatureUITest {
 
         if (uiThread == null) {
             uiThread = new Thread(() -> {
-                // Start the SWT application on the UI thread
                 Display.getDefault().syncExec(() -> {
                     sm = Main.setup(new String[]{inputFile.getAbsolutePath()});
                     shell = sm.getMainShell();
-                    sm.start();
-                    // Notify that the UI is ready
                     try {
                         swtBarrier.await();
+                        sm.start();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -50,12 +48,10 @@ public class AbstractSignatureUITest {
             uiThread.setDaemon(true);
             uiThread.start();
         }
-
-        // Wait for the UI thread to be ready
         swtBarrier.await();
 
         // Create SWTBot on the main UI thread
-        Display.getDefault().asyncExec(() -> {
+        Display.getDefault().syncExec(() -> {
             bot = new SWTBot(shell);
             swtbs = bot.activeShell();
             swtbs.activate();

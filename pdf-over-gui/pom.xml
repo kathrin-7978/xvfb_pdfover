@@ -22,6 +22,7 @@
 			<artifactId>${pdfover-build.swt-artifact-id}</artifactId>
 			<version>${pdfover-build.swt-version}</version>
 		</dependency>
+
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
@@ -146,12 +147,15 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.22.2</version>
-					<configuration>
-						<forkCount>1</forkCount>
-						<reuseForks>false</reuseForks>
-						<argLine>${argLine}</argLine> <!-- Use a property for argLine -->
-					</configuration>
+					<version>2.19.1</version>
+
+					<dependencies>
+						<dependency>
+							<groupId>org.junit.platform</groupId>
+							<artifactId>junit-platform-surefire-provider</artifactId>
+							<version>1.1.0</version>
+						</dependency>
+					</dependencies>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -732,7 +736,6 @@
 				<pdfover-build.bundled-jre.folder-in-archive>jdk-17.0.12+7-jre/Contents/Home</pdfover-build.bundled-jre.folder-in-archive>
 				<pdfover-build.os-name>mac</pdfover-build.os-name>
 				<pdfover-build.output-filename>pdf-over_mac-x86_64.zip</pdfover-build.output-filename>
-				<argLine>-XstartOnFirstThread</argLine> <!-- Set argLine for macOS -->
 			</properties>
 			<build>
 				<plugins>
@@ -767,7 +770,6 @@
 				<pdfover-build.bundled-jre.folder-in-archive>jdk-17.0.12+7-jre/Contents/Home</pdfover-build.bundled-jre.folder-in-archive>
 				<pdfover-build.os-name>mac</pdfover-build.os-name>
 				<pdfover-build.output-filename>pdf-over_mac-aarch64.zip</pdfover-build.output-filename>
-				<argLine>-XstartOnFirstThread</argLine> <!-- Set argLine for macOS -->
 			</properties>
 			<build>
 				<plugins>

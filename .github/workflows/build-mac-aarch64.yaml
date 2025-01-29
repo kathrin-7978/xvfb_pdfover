@@ -24,11 +24,13 @@ jobs:
         if: runner.os == 'macOS'
         run: |
             brew install --cask xquartz
+            open -a XQuartz
+            sleep 5 # Wait for XQuartz to start
 
-            - name: Start Xvfb
-              run: |
-                Xvfb :99 -screen 0 1024x768x24 &
-                export DISPLAY=:99
+      - name: Start Xvfb
+        run: |
+            Xvfb :99 -screen 0 1024x768x24 &
+            export DISPLAY=:99
 
       - name: Build with Maven
         run: mvn -B clean install -Pmac-aarch64 -Pci-build -Dno-native-profile

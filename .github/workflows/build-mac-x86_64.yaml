@@ -38,10 +38,33 @@ jobs:
           echo "Listing contents of pdf-over-build directory:"
           ls -la pdf-over-build
 
+      - name: Extract zip file if exists
+        run: |
+          if [ -f "pdf-over-build/pdf-over_mac-aarch64.zip" ]; then
+            echo "Extracting zip file..."
+            unzip pdf-over-build/pdf-over_mac-aarch64.zip -d pdf-over-build/
+          else
+            echo "No zip file found."
+          fi
+
+      - name: Check extracted files
+        run: |
+          echo "Listing contents of pdf-over-build after extraction:"
+          ls -la pdf-over-build
+
       - name: Make scripts executable
         run: |
           if [ -d "pdf-over-build" ]; then
-            chmod +x pdf-over-build/*.sh pdf-over-build/jre/bin/*
+            if ls pdf-over-build/*.sh 1> /dev/null 2>&1; then
+              chmod +x pdf-over-build/*.sh
+            else
+              echo "No shell scripts found in pdf-over-build."
+            fi
+            if [ -d "pdf-over-build/jre/bin" ]; then
+              chmod +x pdf-over-build/jre/bin/*
+            else
+              echo "Directory pdf-over-build/jre/bin does not exist."
+            fi
           else
             echo "Directory pdf-over-build does not exist."
           fi
@@ -50,7 +73,7 @@ jobs:
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: pdf-over-${{ github.event.pull_request.number || github.ref_name }}-${{ env.commit_sha }}-macos-x86_64
+          name: pdf-over-feature-simple-ui-test-${{ env.commit_sha }}-macos-x86_64
           path: pdf-over.tar
 
 permissions:

@@ -35,28 +35,34 @@ public class AbstractSignatureUiTest {
 
         if (uiThread == null) {
             uiThread = new Thread(() -> {
-                Display.getDefault().syncExec(() -> {
+
+                Display display = new Display();
+                shell = new Shell(display);
                 sm = Main.setup(new String[]{inputFile.getAbsolutePath()});
                 shell = sm.getMainShell();
                 try {
                     swtBarrier.await();
                     sm.start();
+                    // Event loop for the display
+                    while (!shell.isDisposed()) {
+                        if (!display.readAndDispatch()) {
+                            display.sleep();
+                        }
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
+                } finally {
+                    display.dispose();
                 }
-                  });
             });
             uiThread.setDaemon(true);
             uiThread.start();
         }
         swtBarrier.await();
 
-        // Create SWTBot on the main UI thread
-        Display.getDefault().syncExec(() -> {
-            bot = new SWTBot(shell);
-            swtbs = bot.activeShell();
-            swtbs.activate();
-        });
+        bot = new SWTBot(shell);
+        swtbs = bot.activeShell();
+        swtbs.activate();
     }
 
 

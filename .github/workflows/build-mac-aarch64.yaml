@@ -2,9 +2,9 @@ name: Build MacOS (aarch64)
 
 on:
   push:
-    branches: [ "feature/simple-ui-test" ]
+    branches: [ "feature/automated-ui-tests" ]
   pull_request:
-    branches: [ "feature/simple-ui-test" ]
+    branches: [ "feature/automated-ui-tests" ]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}

@@ -23,7 +23,7 @@ jobs:
       - name: Install XQuartz
         run: |
             brew install --cask xquartz
-            open /Applications/Utilities/XQuartz.app
+            open -a XQuartz
             sleep 5 # Wait for XQuartz to start
 
             - name: Start Xvfb

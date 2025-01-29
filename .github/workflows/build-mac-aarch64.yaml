@@ -38,6 +38,15 @@ jobs:
             echo "Listing contents of pdf-over-build directory:"
             ls -la pdf-over-build
 
+      - name: Extract zip file if exists
+        run: |
+          if [ -f "pdf-over-build/pdf-over_mac-aarch64.zip" ]; then
+            echo "Extracting zip file..."
+            unzip pdf-over-build/pdf-over_mac-aarch64.zip -d pdf-over-build/
+         else
+           echo "No zip file found."   
+         fi
+
       - name: Make scripts executable
         run: |
             if [ -d "pdf-over-build" ]; then

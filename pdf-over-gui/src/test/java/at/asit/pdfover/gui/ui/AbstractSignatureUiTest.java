@@ -16,6 +16,7 @@ import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AbstractSignatureUiTest {
 
@@ -61,8 +62,9 @@ public class AbstractSignatureUiTest {
 
 
     @Test
-    public void buttonClickTest() {
+    public void buttonClickTest() throws Exception {
         ICondition widgetExists = new WidgetExitsCondition(str("mobileBKU.numb3r"));
         bot.waitUntil(widgetExists, 20000);
+        assertTrue(widgetExists.test(), "The widget should exist after test setup.");
     }
 }

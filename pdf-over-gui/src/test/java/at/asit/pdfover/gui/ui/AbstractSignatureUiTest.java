@@ -34,30 +34,29 @@ public class AbstractSignatureUiTest {
         final CyclicBarrier swtBarrier = new CyclicBarrier(2);
 
         if (uiThread == null) {
-            uiThread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-
-
-                    sm = Main.setup(new String[]{inputFile.getAbsolutePath()});
-                    shell = sm.getMainShell();
-
-                    try {
-                        swtBarrier.await();
-                        sm.start();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+            uiThread = new Thread(() -> {
+                Display.getDefault().syncExec(() -> {
+                sm = Main.setup(new String[]{inputFile.getAbsolutePath()});
+                shell = sm.getMainShell();
+                try {
+                    swtBarrier.await();
+                    sm.start();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+                  });
             });
             uiThread.setDaemon(true);
             uiThread.start();
         }
         swtBarrier.await();
 
-        bot =  new SWTBot(shell);
-        swtbs = bot.activeShell();
-        swtbs.activate();
+        // Create SWTBot on the main UI thread
+        Display.getDefault().syncExec(() -> {
+            bot = new SWTBot(shell);
+            swtbs = bot.activeShell();
+            swtbs.activate();
+        });
     }
 
 

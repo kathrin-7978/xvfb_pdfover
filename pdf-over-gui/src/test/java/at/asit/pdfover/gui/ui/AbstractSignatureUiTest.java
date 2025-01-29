@@ -39,8 +39,9 @@ public class AbstractSignatureUiTest {
         }
 
         if (uiThread == null) {
-            Display finalDisplay = display;
+
             uiThread = new Thread(() -> {
+                Display finalDisplay = display;
                 shell = new Shell(finalDisplay);
                 sm = Main.setup(new String[]{inputFile.getAbsolutePath()});
                 shell = sm.getMainShell();

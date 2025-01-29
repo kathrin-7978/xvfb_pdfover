@@ -154,7 +154,7 @@
 					<configuration>
 						<forkCount>1</forkCount>
 						<reuseForks>false</reuseForks>
-						<argLine>-XstartOnFirstThread -Xmx1024m</argLine>
+						<argLine>-XstartOnFirstThread</argLine>
 					</configuration>
 				</plugin>
 				<plugin>

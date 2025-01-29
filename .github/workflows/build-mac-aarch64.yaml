@@ -1,9 +1,9 @@
 name: Build MacOS (aarch64)
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "feature/automated-ui-tests-v2" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "feature/automated-ui-tests-v2" ]
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
@@ -19,10 +19,27 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
           cache: maven
+
+      - name: Install XQuartz
+        run: |
+            brew install --cask xquartz
+            open /Applications/Utilities/XQuartz.app
+            sleep 5 # Wait for XQuartz to start
+
+            - name: Start Xvfb
+              run: |
+                Xvfb :99 -screen 0 1024x768x24 &
+                export DISPLAY=:99
+
       - name: Build with Maven
         run: mvn -B clean install -Pmac-aarch64 -Pci-build -Dno-native-profile
+
+      - name: Run tests
+        run: mvn test
+
       - name: Describe current commit
         run: echo "commit_sha=${GITHUB_SHA::7}" >> $GITHUB_ENV
+
       - name: Remove Previous Build Artifacts
         uses: actions/github-script@v6
         with:

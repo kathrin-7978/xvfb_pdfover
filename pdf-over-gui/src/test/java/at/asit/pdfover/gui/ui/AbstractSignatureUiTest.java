@@ -33,11 +33,15 @@ public class AbstractSignatureUiTest {
     public final void setupUITest() throws InterruptedException, BrokenBarrierException {
         final CyclicBarrier swtBarrier = new CyclicBarrier(2);
 
-        if (uiThread == null) {
-            uiThread = new Thread(() -> {
+        Display display = Display.getDefault();
+        if (display == null) {
+            display = new Display();
+        }
 
-                Display display = new Display();
-                shell = new Shell(display);
+        if (uiThread == null) {
+            Display finalDisplay = display;
+            uiThread = new Thread(() -> {
+                shell = new Shell(finalDisplay);
                 sm = Main.setup(new String[]{inputFile.getAbsolutePath()});
                 shell = sm.getMainShell();
                 try {
@@ -45,14 +49,14 @@ public class AbstractSignatureUiTest {
                     sm.start();
                     // Event loop for the display
                     while (!shell.isDisposed()) {
-                        if (!display.readAndDispatch()) {
-                            display.sleep();
+                        if (!finalDisplay.readAndDispatch()) {
+                            finalDisplay.sleep();
                         }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
-                    display.dispose();
+                    finalDisplay.dispose();
                 }
             });
             uiThread.setDaemon(true);

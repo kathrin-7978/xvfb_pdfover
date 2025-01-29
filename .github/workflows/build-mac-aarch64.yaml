@@ -21,10 +21,9 @@ jobs:
           cache: maven
 
       - name: Install XQuartz
+        if: runner.os == 'macOS'
         run: |
             brew install --cask xquartz
-            open -a XQuartz
-            sleep 5 # Wait for XQuartz to start
 
             - name: Start Xvfb
               run: |

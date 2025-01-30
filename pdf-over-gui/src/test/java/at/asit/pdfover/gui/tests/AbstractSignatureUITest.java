@@ -100,7 +100,6 @@ public abstract class AbstractSignatureUITest {
                 @Override
                 public void run() {
                     currentProfile = getCurrentProfile();
-                    setConfig();
                     Display.getDefault().syncExec(() -> {
                     sm = Main.setup(new String[]{inputFile.getAbsolutePath()});
                     shell = sm.getMainShell();

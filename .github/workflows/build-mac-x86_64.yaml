@@ -19,10 +19,28 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
           cache: maven
-      - name: Build with Maven
-        run: mvn clean install -Pmac -DargLine="-XstartOnFirstThread"
-      - name: Run tests
-        run: mvn test -Pmac -DargLine="-XstartOnFirstThread"
+
+      - name: Install XQuartz
+        if: runner.os == 'macOS'
+        run: |
+            brew install --cask xquartz
+            open -a XQuartz
+            sleep 5 # Wait for XQuartz to start
+
+            - name: Start Xvfb
+              run: |
+                Xvfb :99 -screen 0 1024x768x24 &
+                export DISPLAY=:99
+
+      - name: Run Tests
+        env:
+          DISPLAY: :99
+        run: |
+            java -Dorg.eclipse.swt.internal.gtk.cairoGraphics=false \
+                 -Dorg.eclipse.swt.internal.gtk.useCairo=false \
+                 -Djava.awt.headless=true \
+                 -Dorg.eclipse.swt.internal.gtk.startOnFirstThread=true \
+                 -jar your-swt-application.jar # Replace with your actual jar file
       - name: Describe current commit
         run: echo "commit_sha=${GITHUB_SHA::7}" >> $GITHUB_ENV
       - name: Remove Previous Build Artifacts

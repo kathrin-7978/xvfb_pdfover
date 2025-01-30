@@ -94,12 +94,11 @@ public abstract class AbstractSignatureUITest {
     @BeforeEach
     public final void setupUITest() throws InterruptedException, BrokenBarrierException {
         final CyclicBarrier swtBarrier = new CyclicBarrier(2);
-
+        setConfig();
         if (uiThread == null) {
             uiThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    currentProfile = getCurrentProfile();
                     Display.getDefault().syncExec(() -> {
                     sm = Main.setup(new String[]{inputFile.getAbsolutePath()});
                     shell = sm.getMainShell();

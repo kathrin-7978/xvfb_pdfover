@@ -205,6 +205,7 @@ public abstract class AbstractSignatureUITest {
     private void setConfig() {
         ConfigurationManager cm = new ConfigurationManager();
         Point size = cm.getMainWindowSize();
+        currentProfile = Profile.SIGNATURBLOCK_SMALL;
 
         Map<String,String> testParams = Map.ofEntries(
                 Map.entry(Constants.CFG_BKU, cm.getDefaultBKUPersistent().name()),

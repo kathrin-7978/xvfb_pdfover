@@ -98,15 +98,21 @@ public abstract class AbstractSignatureUITest {
         if (uiThread == null) {
             uiThread = new Thread(new Runnable() {
                 @Override
+
                 public void run() {
+                    try {
                     Display.getDefault().syncExec(() -> {
                         setConfig();
                     sm = Main.setup(new String[]{inputFile.getAbsolutePath()});
                     shell = sm.getMainShell();
                 });
-                    try {
-                        swtBarrier.await();
-                        sm.start();
+                        swtBarrier.await(); // Wait for the main thread to reach this point
+
+                        // Start the state machine on the UI thread
+                        Display.getDefault().syncExec(() -> {
+                            sm.start();
+                        });
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

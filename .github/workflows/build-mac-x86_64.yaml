@@ -33,7 +33,7 @@ jobs:
                 export DISPLAY=:99
 
       - name: Run Tests
-        run: xvfb-run mvn test -Djava.awt.headless=true -Dorg.eclipse.swt.internal.gtk.startOnFirstThread=true
+        run: mvn test -Djava.awt.headless=true -Dorg.eclipse.swt.internal.gtk.startOnFirstThread=true
 
       - name: Describe current commit
         run: echo "commit_sha=${GITHUB_SHA::7}" >> $GITHUB_ENV

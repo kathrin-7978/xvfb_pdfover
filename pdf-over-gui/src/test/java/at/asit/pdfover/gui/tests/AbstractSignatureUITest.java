@@ -101,17 +101,14 @@ public abstract class AbstractSignatureUITest {
 
                 public void run() {
                     try {
+                        swtBarrier.await();
                     Display.getDefault().syncExec(() -> {
                         setConfig();
                     sm = Main.setup(new String[]{inputFile.getAbsolutePath()});
                     shell = sm.getMainShell();
+                    sm.start();
                 });
-                        swtBarrier.await(); // Wait for the main thread to reach this point
 
-                        // Start the state machine on the UI thread
-                        Display.getDefault().syncExec(() -> {
-                            sm.start();
-                        });
 
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -124,11 +121,11 @@ public abstract class AbstractSignatureUITest {
         }
         swtBarrier.await();
 
-        //Display.getDefault().syncExec(() -> {
+        Display.getDefault().syncExec(() -> {
         bot =  new SWTBot(shell);
         swtbs = bot.activeShell();
         swtbs.activate();
-      //   });
+         });
     }
 
     @AfterEach

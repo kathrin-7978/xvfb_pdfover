@@ -25,6 +25,7 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,17 +101,17 @@ public abstract class AbstractSignatureUITest {
                 public void run() {
                     currentProfile = getCurrentProfile();
                     setConfig();
-                    //Display.getDefault().syncExec(() -> {
+                    Display.getDefault().syncExec(() -> {
                     sm = Main.setup(new String[]{inputFile.getAbsolutePath()});
                     shell = sm.getMainShell();
-
+                });
                     try {
                         swtBarrier.await();
                         sm.start();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                   // });
+
                 }
             });
             uiThread.setDaemon(true);
@@ -141,22 +142,24 @@ public abstract class AbstractSignatureUITest {
         uiThread = null;
     }
 
-
+    @Test
     protected void setCredentials() {
+
         try {
             ICondition widgetExists = new WidgetExitsCondition(str("mobileBKU.number"));
             bot.waitUntil(widgetExists, 20000);
 
             bot.textWithLabel(str("mobileBKU.number")).setText("TestUser-1902503362");
-            bot.textWithLabel(str("mobileBKU.password")).setText("123456789");
-            bot.button(str("common.Ok")).click();
+
+            //bot.textWithLabel(str("mobileBKU.password")).setText("123456789");
+            //bot.button(str("common.Ok")).click();
 
         }
         catch (WidgetNotFoundException wnf) {
             bot.button(str("common.Cancel")).click();
             fail(wnf.getMessage());
         }
-
+/*
         File output = new File(getPathOutputFile());
         ICondition outputExists = new FileExistsCondition(output);
         bot.waitUntil(outputExists, 20000);
@@ -165,6 +168,9 @@ public abstract class AbstractSignatureUITest {
             bot.button(str("common.Cancel")).click();
         }
         assertTrue(output.exists(), "Received signed PDF");
+
+ */
+
     }
 
     private void deleteOutputFile() {

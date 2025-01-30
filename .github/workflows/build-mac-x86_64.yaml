@@ -27,8 +27,8 @@ jobs:
             open -a XQuartz
             sleep 5 # Wait for XQuartz to start
 
-            - name: Start Xvfb
-              run: |
+      - name: Start Xvfb
+        run: |
                 Xvfb :99 -screen 0 1024x768x24 &
                 export DISPLAY=:99
 

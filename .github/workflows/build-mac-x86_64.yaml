@@ -33,14 +33,8 @@ jobs:
                 export DISPLAY=:99
 
       - name: Run Tests
-        env:
-          DISPLAY: :99
-        run: |
-            java -Dorg.eclipse.swt.internal.gtk.cairoGraphics=false \
-                 -Dorg.eclipse.swt.internal.gtk.useCairo=false \
-                 -Djava.awt.headless=true \
-                 -Dorg.eclipse.swt.internal.gtk.startOnFirstThread=true \
-                 -jar your-swt-application.jar # Replace with your actual jar file
+        run: xvfb-run mvn test -Djava.awt.headless=true -Dorg.eclipse.swt.internal.gtk.startOnFirstThread=true
+
       - name: Describe current commit
         run: echo "commit_sha=${GITHUB_SHA::7}" >> $GITHUB_ENV
       - name: Remove Previous Build Artifacts

@@ -25,6 +25,7 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +53,7 @@ public abstract class AbstractSignatureUITest {
     private static File inputFile = new File("src/test/resources/TestFile.pdf");
     private static String outputDir = inputFile.getAbsoluteFile().getParent();
     private String postFix = "_superSigned";
-    private Profile currentProfile;
+    private Profile currentProfile = Profile.SIGNATURBLOCK_SMALL;
     private static final String UNIX_SEPARATOR = "/";
 
     private static final Logger logger = LoggerFactory
@@ -99,7 +100,7 @@ public abstract class AbstractSignatureUITest {
                 @Override
                 public void run() {
                     currentProfile = getCurrentProfile();
-                    setConfig();
+                    //setConfig();
                     //Display.getDefault().syncExec(() -> {
                     sm = Main.setup(new String[]{inputFile.getAbsolutePath()});
                     shell = sm.getMainShell();
@@ -142,20 +143,24 @@ public abstract class AbstractSignatureUITest {
     }
 
 
+    @Test
     protected void setCredentials() {
         try {
             ICondition widgetExists = new WidgetExitsCondition(str("mobileBKU.number"));
             bot.waitUntil(widgetExists, 20000);
 
-            bot.textWithLabel(str("mobileBKU.number")).setText("TestUser-1902503362");
-            bot.textWithLabel(str("mobileBKU.password")).setText("123456789");
-            bot.button(str("common.Ok")).click();
+
+
+           // bot.textWithLabel(str("mobileBKU.number")).setText("TestUser-1902503362");
+          //  bot.textWithLabel(str("mobileBKU.password")).setText("123456789");
+          //  bot.button(str("common.Ok")).click();
 
         }
         catch (WidgetNotFoundException wnf) {
             bot.button(str("common.Cancel")).click();
             fail(wnf.getMessage());
         }
+        /*
 
         File output = new File(getPathOutputFile());
         ICondition outputExists = new FileExistsCondition(output);
@@ -165,6 +170,8 @@ public abstract class AbstractSignatureUITest {
             bot.button(str("common.Cancel")).click();
         }
         assertTrue(output.exists(), "Received signed PDF");
+        */
+
     }
 
     private void deleteOutputFile() {

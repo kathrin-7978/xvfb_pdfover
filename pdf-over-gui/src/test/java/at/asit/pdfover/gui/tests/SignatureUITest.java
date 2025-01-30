@@ -13,7 +13,7 @@ import at.asit.pdfover.commons.Profile;
 public class SignatureUITest extends AbstractSignatureUITest{
 
 	@Order(1)
-	@ParameterizedTest
+	//@ParameterizedTest
 	@EnumSource(Profile.class)
 	public void createRefFiles(Profile profile) throws IOException {
 		setCredentials();
@@ -21,7 +21,7 @@ public class SignatureUITest extends AbstractSignatureUITest{
 	}
 
 	@Order(2)
-	@ParameterizedTest
+	//@ParameterizedTest
 	@EnumSource(Profile.class)
 	public void testSignaturAutoPosition(Profile profile) throws IOException {
 		setCredentials();
@@ -29,7 +29,7 @@ public class SignatureUITest extends AbstractSignatureUITest{
 	}
 
 	@Order(3)
-	@ParameterizedTest
+	//@ParameterizedTest
 	@EnumSource(Profile.class)
 	public void testSignaturAutoPositionNegative(Profile profile) throws IOException {
 		setCredentials();

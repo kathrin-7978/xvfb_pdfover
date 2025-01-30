@@ -96,34 +96,29 @@ public abstract class AbstractSignatureUITest {
         final CyclicBarrier swtBarrier = new CyclicBarrier(2);
 
         if (uiThread == null) {
-            uiThread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    currentProfile = getCurrentProfile();
-                    //setConfig();
-                    //Display.getDefault().syncExec(() -> {
-                    sm = Main.setup(new String[]{inputFile.getAbsolutePath()});
-                    shell = sm.getMainShell();
-
-                    try {
-                        swtBarrier.await();
+            uiThread = new Thread(() -> {
+                try {
+                    swtBarrier.await();
+                    Display.getDefault().syncExec(() -> {
+                        sm = Main.setup(new String[]{inputFile.getAbsolutePath()});
+                        shell = sm.getMainShell();
                         sm.start();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                   // });
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+
+
             });
             uiThread.setDaemon(true);
             uiThread.start();
         }
         swtBarrier.await();
 
-        //Display.getDefault().syncExec(() -> {
         bot =  new SWTBot(shell);
         swtbs = bot.activeShell();
         swtbs.activate();
-      //   });
+
     }
 
     @AfterEach
@@ -145,6 +140,7 @@ public abstract class AbstractSignatureUITest {
 
     @Test
     protected void setCredentials() {
+        Display.getDefault().syncExec(() -> {
         try {
             ICondition widgetExists = new WidgetExitsCondition(str("mobileBKU.number"));
             bot.waitUntil(widgetExists, 20000);
@@ -156,6 +152,7 @@ public abstract class AbstractSignatureUITest {
           //  bot.button(str("common.Ok")).click();
 
         }
+
         catch (WidgetNotFoundException wnf) {
             bot.button(str("common.Cancel")).click();
             fail(wnf.getMessage());
@@ -172,6 +169,7 @@ public abstract class AbstractSignatureUITest {
         assertTrue(output.exists(), "Received signed PDF");
         */
 
+        });
     }
 
     private void deleteOutputFile() {

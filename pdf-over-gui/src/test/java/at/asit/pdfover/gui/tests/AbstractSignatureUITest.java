@@ -147,7 +147,7 @@ public abstract class AbstractSignatureUITest {
     protected void setCredentials() {
         try {
             ICondition widgetExists = new WidgetExitsCondition(str("mobileBKU.number"));
-            bot.waitUntil(widgetExists, 40000);
+            bot.waitUntil(widgetExists, 20000);
 
 
 

@@ -36,7 +36,7 @@ public class SimpleUITest {
 
     @Test
     public void testButtonClick() {
-        assertTrue(bot.button("Click M").isVisible());
+        assertTrue(bot.button("Click Me").isVisible());
     }
 
     @AfterEach
